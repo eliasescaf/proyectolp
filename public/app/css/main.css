@@ -1,0 +1,62 @@
+nav.navbar {
+  background-color: #2d5a27 !important;
+  padding-top: 0.8rem;
+  padding-bottom: 0;
+}
+
+.navbar-nav .nav-link {
+  color: #ffffff !important;
+  font-weight: 500;
+  padding-bottom: 0.8rem !important;
+  border-bottom: 3px solid transparent;
+}
+
+.navbar-nav .nav-link:hover,
+.navbar-nav .nav-link.active {
+  color: #d1e7dd !important;
+  border-bottom-color: #ffffff !important;
+}
+
+body {
+  background-color: #f3f4f6 !important;
+}
+
+#marca-nombre,
+.navbar-nav .nav-link {
+  color: #ffffff !important;
+  font-weight: 500;
+}
+
+.navbar-nav {
+  align-items: center;
+}
+
+.dropdown-menu .dropdown-item {
+  color: #212529;
+}
+
+#footer-home {
+  background-color: #1b3022 !important;
+}
+
+#marca-nombre {
+  padding-bottom: 0.8rem;
+  border-bottom: none !important;
+}
+
+.mid-input {
+  flex-basis: 48% !important;
+}
+
+.full-input {
+  flex-basis: 98% !important;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: #2d5a27 !important;
+}
+
+img {
+  object-fit: cover;
+}
