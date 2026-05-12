@@ -53,31 +53,18 @@
                 ><i class="bi bi-people"></i> Usuarios</a
               >
             </li>
+          </ul>
+          <ul class="navbar-nav ms-auto">
             <li class="nav-item dropdown">
-              <a
-                class="nav-link dropdown-toggle"
-                role="button"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-              >
-                Mi cuenta
+              <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown">
+                <i class="bi bi-person-circle"></i> Mi cuenta
               </a>
-              <ul class="dropdown-menu">
+              <ul class="dropdown-menu dropdown-menu-end"> 
+                <li><a class="dropdown-item" href="#">Mis datos</a></li>
                 <li>
-                  <a class="dropdown-item" href="javascript:void(0)"
-                    >Mis datos</a
-                  >
+                  <hr class="dropdown-divider">
                 </li>
-                <li>
-                  <hr class="dropdown-divider" />
-                </li>
-                <li>
-                  <a
-                    class="dropdown-item text-danger"
-                    href="app/resources/views/authentication/index.html"
-                    >Cerrar sesión</a
-                  >
-                </li>
+                <li><a class="dropdown-item text-danger" href="#">Cerrar sesión</a></li>
               </ul>
             </li>
           </ul>

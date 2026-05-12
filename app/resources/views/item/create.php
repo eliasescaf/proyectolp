@@ -60,31 +60,18 @@
                 ><i class="bi bi-people"></i> Usuarios</a
               >
             </li>
+          </ul>
+          <ul class="navbar-nav ms-auto">
             <li class="nav-item dropdown">
-              <a
-                class="nav-link dropdown-toggle"
-                role="button"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-              >
-                Mi cuenta
+              <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown">
+                <i class="bi bi-person-circle"></i> Mi cuenta
               </a>
-              <ul class="dropdown-menu">
+              <ul class="dropdown-menu dropdown-menu-end"> 
+                <li><a class="dropdown-item" href="#">Mis datos</a></li>
                 <li>
-                  <a class="dropdown-item" href="javascript:void(0)"
-                    >Mis datos</a
-                  >
+                  <hr class="dropdown-divider">
                 </li>
-                <li>
-                  <hr class="dropdown-divider" />
-                </li>
-                <li>
-                  <a
-                    class="dropdown-item text-danger"
-                    href="app/resources/views/authentication/index.html"
-                    >Cerrar sesión</a
-                  >
-                </li>
+                <li><a class="dropdown-item text-danger" href="#">Cerrar sesión</a></li>
               </ul>
             </li>
           </ul>
@@ -93,25 +80,16 @@
     </nav>
     <section id="form-cruds" class="d-flex flex-column">
       <div class="container px-4 px-lg-5 mb-4">
-        <div class="pt-5 pb-2 d-flex justify-content-between align-items-end">
-          <div>
-            <h2 class="fw-bold">Detalle del producto</h2>
-            <p class="lead">
-              Visualice o modifique la información del producto
-            </p>
-          </div>
-          <div class="text-end mb-2">
-            <h5 class="text-success mb-1">Producto Activo</h5>
-            <p class="small text-secondary mb-0">Creado el: 09/03/2026</p>
-          </div>
+        <div class="py-2 me-auto mt-3">
+          <h2 class="fw-bold">Nuevo producto</h2>
+          <p class="lead">Complete los datos para añadir un nuevo producto</p>
         </div>
-
         <div class="card rounded-3 shadow-sm border-light">
-          <div class="card-body p-4">
+          <div class="card-body p-2">
             <form
-              id="form-edit"
               action="app/resources/views/item/index.html"
               method="POST"
+              class="p-2"
               autocomplete="off"
             >
               <div class="d-flex flex-wrap gap-3">
@@ -122,16 +100,14 @@
                   <input
                     type="text"
                     class="form-control"
-                    value="Cactus"
-                    name="nombre-data"
                     id="nombre-data"
+                    name="nombre-data"
+                    minlength="2"
                     pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$"
                     title="Los nombres solo deben contener letras y espacios."
-                    disabled
                     required
                   />
                 </div>
-
                 <div class="flex-grow-1 mid-input">
                   <label for="codigo-data" class="form-label fw-semibold"
                     >Código</label
@@ -139,10 +115,8 @@
                   <input
                     type="text"
                     class="form-control"
-                    value="003"
-                    name="codigo-data"
                     id="codigo-data"
-                    disabled
+                    name="codigo-data"
                     required
                   />
                 </div>
@@ -155,28 +129,25 @@
                     class="form-control"
                     id="descripcion-data"
                     name="descripcion-data"
-                    value="Sombra"
                     maxlength="50"
                     title="Las descripciones tienen un largo máximo de 50 caracteres."
-                    disabled
                     required
                   />
                 </div>
                 <div class="flex-grow-1 mid-input">
                   <label class="form-label" for="categoria-data"
-                    >Categoria</label
+                    >Categoría</label
                   >
                   <select
                     class="form-select"
                     name="categoria-data"
                     id="categoria-data"
-                    disabled
                     required
                   >
-                    <option value="" disabled>
+                    <option value="" disabled selected>
                       Seleccione una categoría...
                     </option>
-                    <option value="1" selected>Interior</option>
+                    <option value="1">Interior</option>
                     <option value="2">Exterior</option>
                     <option value="3">Sombra</option>
                   </select>
@@ -190,11 +161,9 @@
                     class="form-control"
                     id="precio-data"
                     name="precio-data"
-                    value="4000"
                     min="0"
                     step="0.01"
                     title="El precio debe ser mayor a 0."
-                    disabled
                     required
                   />
                 </div>
@@ -207,59 +176,24 @@
                     class="form-control"
                     id="stock-data"
                     name="stock-data"
-                    value="12"
                     min="0"
                     step="1"
                     title="El stock debe ser mayor a 0."
-                    disabled
                     required
                   />
                 </div>
               </div>
-
               <hr class="my-4 text-secondary opacity-25" />
-
-              <div
-                class="d-flex flex-wrap justify-content-between align-items-center gap-2"
-              >
-                <div>
-                  <button
-                    type="button"
-                    class="btn btn-outline-danger btnEliminar"
-                  >
-                    Eliminar
-                  </button>
-                  <button type="button" class="btn btn-outline-secondary">
-                    Exportar PDF
-                  </button>
-                </div>
-
-                <div class="d-flex gap-2">
-                  <a
-                    href="app/resources/views/item/index.html"
-                    class="btn btn-light px-4"
-                    >Regresar</a
-                  >
-
-                  <button type="button" class="btn btn-primary px-4 btnEditar">
-                    Editar información
-                  </button>
-
-                  <button
-                    type="submit"
-                    class="btn btn-success px-4 btnActualizar"
-                    disabled
-                  >
-                    Actualizar
-                  </button>
-                  <button
-                    type="reset"
-                    class="btn btn-secondary px-4 btnCancelar"
-                    disabled
-                  >
-                    Cancelar
-                  </button>
-                </div>
+              <div class="d-flex justify-content-end gap-2">
+                <a
+                  href="app/resources/views/item/index.html"
+                  class="btn btn-light px-4"
+                >
+                  Regresar
+                </a>
+                <button type="submit" class="btn btn-success px-4 btnGuardar">
+                  Guardar y validar producto
+                </button>
               </div>
             </form>
           </div>

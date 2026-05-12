@@ -54,60 +54,79 @@
                 ><i class="bi bi-people"></i> Usuarios</a
               >
             </li>
+          </ul>
+          <ul class="navbar-nav ms-auto">
             <li class="nav-item dropdown">
-              <a
-                class="nav-link dropdown-toggle"
-                role="button"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-              >
-                Mi cuenta
+              <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown">
+                <i class="bi bi-person-circle"></i> Mi cuenta
               </a>
-              <ul class="dropdown-menu">
+              <ul class="dropdown-menu dropdown-menu-end"> 
+                <li><a class="dropdown-item" href="#">Mis datos</a></li>
                 <li>
-                  <a class="dropdown-item" href="javascript:void(0)"
-                    >Mis datos</a
-                  >
+                  <hr class="dropdown-divider">
                 </li>
-                <li>
-                  <hr class="dropdown-divider" />
-                </li>
-                <li>
-                  <a
-                    class="dropdown-item text-danger"
-                    href="app/resources/views/authentication/index.html"
-                    >Cerrar sesión</a
-                  >
-                </li>
+                <li><a class="dropdown-item text-danger" href="#">Cerrar sesión</a></li>
               </ul>
             </li>
           </ul>
         </div>
       </div>
     </nav>
-    <section id="form-cruds" class="d-flex flex-column">
+    <section id="form-cruds" class="d-flex flex-column pb-5">
       <div class="container px-4 px-lg-5">
         <div class="py-2 me-auto mt-3">
           <h2 class="fw-bold">Gestión de productos</h2>
           <p class="lead">Gestione todos sus productos</p>
         </div>
-        <div class="card rounded-3 overflow-hidden shadow-sm border-light">
-          <div class="card-header">
-            <div class="dropdown">
-              <button
-                class="btn btn-secondary btn-sm dropdown-toggle"
-                type="button"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-              >
-                Filtros
-              </button>
-              <ul class="dropdown-menu">
-                <li class="dropdown-item">Stock bajo (menor a 3)</li>
-                <li class="dropdown-item">Sin stock</li>
-              </ul>
+
+        <div class="d-flex justify-content-between align-items-center bg-white border rounded-3 px-3 py-2 mb-2 shadow-sm">
+          <span class="text-secondary fw-bold small"><i class="bi bi-funnel me-2"></i>Filtros</span>
+          <button class="btn btn-link btn-sm text-decoration-none text-muted" type="button" data-bs-toggle="collapse"
+            data-bs-target="#collapseFiltros">
+            <i class="bi bi-chevron-down"></i> <small>Configurar</small>
+          </button>
+        </div>
+        
+        <div class="collapse mb-3" id="collapseFiltros">
+          <div class="card card-body shadow-sm border-light">
+            <div class="row g-3">
+              <div class="col-md-4">
+                <label class="form-label small fw-bold">Buscar</label>
+                <div class="input-group">
+                  <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+                  <input type="text" class="form-control" placeholder="Nombre o código...">
+                </div>
+              </div>
+        
+              <div class="col-md-3">
+                <label class="form-label small fw-bold">Categoría</label>
+                <select class="form-select">
+                  <option selected>Todas</option>
+                  <option value="1">Interior</option>
+                  <option value="2">Exterior</option>
+                  <option value="2">Sombra</option>
+                </select>
+              </div>
+        
+              <div class="col-md-3">
+                <label class="form-label small fw-bold">Ordenar por</label>
+                <select class="form-select">
+                  <option value="nombre">Nombre (A-Z)</option>
+                  <option value="cuenta">Nombre (Z-A)</option>
+                </select>
+              </div>
+        
+              <div class="col-md-2 d-flex align-items-end">
+                <button class="btn btn-primary w-100">Aplicar</button>
+              </div>
             </div>
           </div>
+        </div>
+
+        <div class="card rounded-3 overflow-hidden shadow-sm border-light">
+          <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+              <h5 class="mb-0 fw-bold">Lista de plantas</h5>
+            </div>
           <div class="card-body p-0">
             <table class="table table-striped table-hover">
               <thead>
@@ -133,6 +152,7 @@
                     <a
                       href="app/resources/views/item/edit.html"
                       class="btn btn-sm btn-outline-primary"
+                      title="Editar"
                       ><i class="bi bi-pencil"></i
                     ></a>
                   </td>
@@ -148,6 +168,7 @@
                     <a
                       href="app/resources/views/item/edit.html"
                       class="btn btn-sm btn-outline-primary"
+                      title="Editar"
                       ><i class="bi bi-pencil"></i
                     ></a>
                   </td>

@@ -60,3 +60,12 @@ body {
 img {
   object-fit: cover;
 }
+
+.mid-input {
+  flex: 1 1 200px; 
+  max-width: 100%;
+}
+
+#input-nombre {
+  flex: 0 0 100% !important;
+}

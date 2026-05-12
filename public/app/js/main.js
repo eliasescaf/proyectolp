@@ -1,3 +1,5 @@
+//Lógica del botón registro
+
 const btnRegistro = document.querySelector(".btnGuardar");
 
 if (btnRegistro) {
@@ -18,6 +20,7 @@ if (btnRegistro) {
   });
 }
 
+// Lógica del botón eliminar
 const btnEliminar = document.querySelector(".btnEliminar");
 
 if (btnEliminar) {
@@ -33,38 +36,39 @@ if (btnEliminar) {
   });
 }
 
+// Cambios de estado de los botones
+
 const btnEditar = document.querySelector(".btnEditar");
 const formEdit = document.querySelector("#form-edit");
 const btnActualizar = document.querySelector(".btnActualizar");
 const btnCancelar = document.querySelector(".btnCancelar");
 const campos = document.querySelectorAll("#form-edit input, #form-edit select");
 
-btnEditar.addEventListener("click", () => {
-  campos.forEach((campo) => {
-    campo.disabled = false;
-  });
+const deshabilitarCamposYBtn = (estado) => {
+    campos.forEach(campo => campo.disabled = estado);
 
-  btnActualizar.disabled = false;
-  btnCancelar.disabled = false;
-  btnEditar.disabled = true;
+    btnActualizar.disabled = estado;
+    btnEditar.disabled = !estado;
+    btnCancelar.disabled = estado;
+}
+
+btnEditar.addEventListener("click", () => {
+  deshabilitarCamposYBtn(false); 
 });
 
 btnCancelar.addEventListener("click", () => {
   formEdit.reset();
-
-  campos.forEach((campo) => {
-    campo.disabled = true;
-  });
-
-  btnActualizar.disabled = true;
-  btnCancelar.disabled = true;
-  btnEditar.disabled = false;
+  deshabilitarCamposYBtn(true);
 });
 
+
+//Lógica del botón actualizar
 if (btnActualizar) {
   btnActualizar.addEventListener("click", (e) => {
     if (formEdit.checkValidity()) {
       e.preventDefault();
+
+      deshabilitarCamposYBtn(true);
 
       Swal.fire({
         title: "Registro actualizado!",
@@ -73,15 +77,10 @@ if (btnActualizar) {
         allowOutsideClick: true,
         showConfirmButton: false,
       });
-    }
-    campos.forEach((campo) => (campo.disabled = true));
 
-    btnActualizar.disabled = true;
-    btnCancelar.disabled = true;
-    btnEditar.disabled = false;
-
-    setTimeout(() => {
+      setTimeout(() => {
       formEdit.submit();
     }, 2000);
+    }
   });
 }

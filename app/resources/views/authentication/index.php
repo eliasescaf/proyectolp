@@ -41,7 +41,7 @@
                 class="form-control shadow-sm"
                 pattern="^[a-zA-Z0-9]+$"
                 required
-                placeholder="juanceto12"
+                placeholder="Ingrese su usuario..."
               />
             </div>
           </div>
@@ -58,7 +58,7 @@
                 class="form-control shadow-sm"
                 required
                 minlength="8"
-                placeholder="••••••••"
+                placeholder="Ingrese su contraseña..."
               />
             </div>
           </div>

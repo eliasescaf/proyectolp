@@ -7,7 +7,11 @@
     <link rel="stylesheet" href="public/app/css/bootstrap.min.css" />
     <link rel="stylesheet" href="public/app/css/main.css" />
     <link rel="stylesheet" href="public/app/css/bootstrap-icons.css" />
-    <script src="public/app/js/bootstrap.bundle.min.js" defer></script>
+    <script
+      type="text/javascript"
+      src="public/app/js/bootstrap.bundle.min.js"
+      defer
+    ></script>
     <script
       type="text/javascript"
       src="https://cdn.jsdelivr.net/npm/sweetalert2@11"
@@ -22,7 +26,7 @@
         <a
           id="marca-nombre"
           class="navbar-brand"
-          href="app/resources/views/home/index.html"
+          href="app/resources/views/home/index.php"
           ><i class="bi bi-tree me-2"></i>Plantín</a
         >
         <button
@@ -39,52 +43,39 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             <li class="nav-item">
-              <a class="nav-link" href="app/resources/views/home/index.html"
+              <a class="nav-link" href="app/resources/views/home/index.php"
                 ><i class="bi bi-house-door"></i> Inicio</a
               >
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="app/resources/views/item/index.html"
+              <a class="nav-link" href="app/resources/views/item/index.php"
                 ><i class="bi bi-box-seam"></i> Productos</a
               >
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="app/resources/views/sale/index.html"
+              <a class="nav-link" href="app/resources/views/sale/index.php"
                 ><i class="bi bi-cart3"></i> Ventas</a
               >
             </li>
             <li class="nav-item">
               <a
                 class="nav-link active"
-                href="app/resources/views/user/index.html"
+                href="app/resources/views/user/index.php"
                 ><i class="bi bi-people"></i> Usuarios</a
               >
             </li>
+          </ul>
+          <ul class="navbar-nav ms-auto">
             <li class="nav-item dropdown">
-              <a
-                class="nav-link dropdown-toggle"
-                role="button"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-              >
-                Mi cuenta
+              <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown">
+                <i class="bi bi-person-circle"></i> Mi cuenta
               </a>
-              <ul class="dropdown-menu">
+              <ul class="dropdown-menu dropdown-menu-end"> 
+                <li><a class="dropdown-item" href="#">Mis datos</a></li>
                 <li>
-                  <a class="dropdown-item" href="javascript:void(0)"
-                    >Mis datos</a
-                  >
+                  <hr class="dropdown-divider">
                 </li>
-                <li>
-                  <hr class="dropdown-divider" />
-                </li>
-                <li>
-                  <a
-                    class="dropdown-item text-danger"
-                    href="app/resources/views/authentication/index.html"
-                    >Cerrar sesión</a
-                  >
-                </li>
+                <li><a class="dropdown-item text-danger" href="#">Cerrar sesión</a></li>
               </ul>
             </li>
           </ul>
@@ -93,47 +84,31 @@
     </nav>
     <section id="form-cruds" class="d-flex flex-column">
       <div class="container px-4 px-lg-5 mb-4">
-        <div class="pt-5 pb-2 d-flex justify-content-between align-items-end">
-          <div>
-            <h2 class="fw-bold">Detalle del usuario</h2>
-            <p class="lead">
-              Visualice o modifique la información del integrante
-            </p>
-          </div>
-          <div class="text-end mb-2">
-            <h5 class="text-success mb-1">Cuenta Activa</h5>
-            <p class="small text-secondary mb-0">Creado el: 12/03/2026</p>
-          </div>
+        <div class="py-2 me-auto mt-3">
+          <h2 class="fw-bold">Nuevo usuario</h2>
+          <p class="lead">Complete los datos para añadir un nuevo integrante</p>
         </div>
-
         <div class="card rounded-3 shadow-sm border-light">
-          <div class="card-body p-4">
-            <form id="form-edit" action="#" method="POST" autocomplete="off">
+          <div class="card-body p-2">
+            <form
+              action="app/resources/views/user/index.php"
+              method="POST"
+              class="p-2"
+              autocomplete="off"
+            >
               <div class="d-flex flex-wrap gap-3">
-                <div class="flex-grow-1 mid-input">
-                  <label class="form-label fw-semibold">Apellido(s)</label>
+                <div class="flex-grow-1 full-input">
+                  <label for="nombre-data" class="form-label fw-semibold"
+                    >Nombre completo</label
+                  >
                   <input
                     type="text"
                     class="form-control"
-                    value="Escalante Fuentes"
-                    minlength="2"
-                    pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$"
-                    title="Los apellidos solo deben contener letras y espacios."
-                    disabled
-                    required
-                  />
-                </div>
-
-                <div class="flex-grow-1 mid-input">
-                  <label class="form-label fw-semibold">Nombre(s)</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    value="Elias"
+                    id="nombre-data"
+                    name="nombre-data"
                     minlength="2"
                     pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$"
                     title="Los nombres solo deben contener letras y espacios."
-                    disabled
                     required
                   />
                 </div>
@@ -146,11 +121,9 @@
                     class="form-control"
                     id="cuenta-data"
                     name="cuenta-data"
-                    pattern="^[a-zA-Z0-9]+$"
-                    title="La cuenta no debe almacenar espacios."
                     placeholder="elias_es"
-                    value="eliasss10"
-                    disabled
+                    pattern="^[a-zA-Z0-9]+$"
+                    title="La cuenta no puede contener espacios."
                     required
                   />
                 </div>
@@ -160,15 +133,16 @@
                     class="form-select"
                     name="perfil-data"
                     id="perfil-data"
-                    disabled
                     required
                   >
-                    <option value="" disabled>Seleccione un perfil...</option>
-                    <option value="1" disabled selected>Operador</option>
+                    <option value="" disabled selected>
+                      Seleccione un perfil...
+                    </option>
+                    <option value="1">Operador</option>
                     <option value="2">Administrador</option>
                   </select>
                 </div>
-                <div class="flex-grow-1 mid-input">
+                <div class="flex-grow-1 full-input">
                   <label for="email-data" class="form-label fw-semibold"
                     >Correo electrónico</label
                   >
@@ -177,8 +151,6 @@
                     class="form-control"
                     id="email-data"
                     name="email-data"
-                    value="eliasescalante27@gmail.com"
-                    disabled
                     required
                   />
                 </div>
@@ -191,59 +163,36 @@
                     class="form-control"
                     id="contraseña-data"
                     name="contraseña-data"
-                    value="jorge1234"
                     minlength="8"
                     title="La contraseña debe tener al menos 8 caracteres."
                     placeholder="Lituani@2579"
-                    disabled
+                    required
+                  />
+                </div>
+                <div class="flex-grow-1 mid-input">
+                  <label for="contraseña2-data" class="form-label fw-semibold"
+                    >Confirmar contraseña</label
+                  >
+                  <input
+                    type="password"
+                    class="form-control"
+                    id="contraseña2-data"
+                    name="contraseña2-data"
                     required
                   />
                 </div>
               </div>
-
               <hr class="my-4 text-secondary opacity-25" />
-
-              <div
-                class="d-flex flex-wrap justify-content-between align-items-center gap-2"
-              >
-                <div>
-                  <button
-                    type="button"
-                    class="btn btn-outline-danger btnEliminar"
-                  >
-                    Eliminar
-                  </button>
-                  <button type="button" class="btn btn-outline-secondary">
-                    Exportar PDF
-                  </button>
-                </div>
-
-                <div class="d-flex gap-2">
-                  <a
-                    href="app/resources/views/user/index.html"
-                    class="btn btn-light px-4"
-                    >Regresar</a
-                  >
-
-                  <button type="button" class="btn btn-primary px-4 btnEditar">
-                    Editar información
-                  </button>
-
-                  <button
-                    type="submit"
-                    class="btn btn-success px-4 btnActualizar"
-                    disabled
-                  >
-                    Actualizar
-                  </button>
-                  <button
-                    type="reset"
-                    class="btn btn-secondary px-4 btnCancelar"
-                    disabled
-                  >
-                    Cancelar
-                  </button>
-                </div>
+              <div class="d-flex justify-content-end gap-2">
+                <a
+                  href="app/resources/views/user/index.php"
+                  class="btn btn-light px-4"
+                >
+                  Regresar
+                </a>
+                <button type="submit" class="btn btn-success px-4 btnGuardar">
+                  Guardar y validar usuario
+                </button>
               </div>
             </form>
           </div>
