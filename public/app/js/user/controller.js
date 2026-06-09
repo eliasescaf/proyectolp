@@ -10,21 +10,24 @@ export const controller = {
     bindEvents: function(){
         const btnActualizar = document.querySelector(".btnActualizar");
         if(btnActualizar){
-            btnActualizar.addEventListener("click", () => this.update())
-        }
+            btnActualizar.addEventListener("click", (e) => {
+                e.preventDefault();
+                this.update()})
+        };
 
         const btnEditar = document.querySelector(".btnEditar");
         if(btnEditar){
             btnEditar.addEventListener("click", () => view.enableForm(true));
-        }
+        };
 
         const btnCancelar = document.querySelector(".btnCancelar");
         if(btnCancelar){
             btnCancelar.addEventListener("click", () => {
-                view.resetForm();
+                const id = document.getElementById("user-id").value;
+                this.load(id)
                 view.enableForm(false)
         });
-        }
+        };
 
         const btnEliminar = document.querySelector(".btnEliminar");
         if(btnEliminar){
@@ -32,7 +35,29 @@ export const controller = {
                 const id = document.getElementById("user-id").value;
                 this.delete(id);
             })
-        }
+        };
+
+        const btnGuardar = document.querySelector(".btnGuardar");
+        if(btnGuardar){
+            btnGuardar.addEventListener("click", (e) =>{
+                e.preventDefault();
+                this.save();
+            })
+        };
+
+        const btnPDF = document.querySelector(".btnPDF");
+        if(btnPDF){
+            btnPDF.addEventListener("click", () =>{
+                this.exportToPDF();
+            })
+        };
+
+        const btnListado = document.querySelector(".btnExportarListado");
+        if(btnListado){
+            btnListado.addEventListener("click", () =>{
+                this.exportListToPDF();
+            });
+        };
         
     },
 
@@ -44,15 +69,27 @@ export const controller = {
 
     save: function(){
         const data = view.getFormData();
-        service.save(data);
-        view.showMessage("Registro creado!", "success");
-        view.resetForm();
+
+        if (data.contraseña !== data["contraseña2-data"]) {
+        view.showMessage("Las contraseñas no coinciden", "error");
+        return;
+        }
+
+        if(service.save(data)){
+          view.showMessage("Registro creado!", "success");
+
+          setTimeout(() => {
+            window.location.href = "app/resources/views/user/index.php";
+          }, 1500);
+        }
     },
 
     update: function(){
         const data = view.getFormData();
+        console.log(data);
         if(service.update(data)){
             view.showMessage("Registro actualizado!", "success");
+            document.getElementById("user-id").value = data.id;
             view.enableForm(false);
         }
     },
@@ -66,7 +103,7 @@ export const controller = {
             html: `Se ha eliminado a: <b>${user.nombre}</b>`,
             showConfirmButton: false,
             icon: "warning",
-            footer: '<a href="app/resources/views/user/index.html">Volver al listado</a>' 
+            footer: '<a href="app/resources/views/user/index.php">Volver al listado</a>' 
         });
             this.list(); 
         }
@@ -78,6 +115,52 @@ export const controller = {
     },
 
     exportToPDF: function(){
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
 
+        const data = view.getFormData();
+
+        const estado = document.getElementById("estado-data")?.textContent || "N/A";
+        const fecha = document.getElementById("fecha-data")?.textContent || "N/A";
+
+        doc.setFontSize(16);
+        doc.text("Ficha de Usuario", 14, 20);
+
+        doc.setFontSize(12);
+        doc.text(`Nombre: ${data.nombre}`, 14, 40);
+        doc.text(`Cuenta: ${data.cuenta}`, 14, 50);
+        doc.text(`Correo: ${data.correo}`, 14, 60);
+        doc.text(`Perfil: ${data.perfil === '1' ? 'Operador' : 'Administrador'}`, 14, 70);
+        doc.text(estado, 14, 80);
+        doc.text(fecha, 14, 90);
+
+        doc.save(`usuario_${data.cuenta}.pdf`);
+    },
+
+    exportListToPDF: function(){
+        if (!window.jspdf) {
+        console.error("jsPDF no está cargado");
+        return;
+        }
+
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+
+        doc.setFontSize(16);
+        doc.text("Listado de usuarios: ", 14, 20);
+
+        doc.setFontSize(12);
+
+        doc.autoTable({
+            html:"#user-table",
+            startY: 40,
+            theme: 'striped',
+            headStyles: { fillColor: [40, 167, 69]},
+            columnStyles: {
+            4: { display: 'none' } 
+            },
+        });
+
+        doc.save("listado_usuarios.pdf");
     },
 };

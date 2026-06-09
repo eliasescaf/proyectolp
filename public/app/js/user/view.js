@@ -39,12 +39,22 @@ export const view = {
 
     getFormData: function(){
         const form = this.getForm();
-        const formData = new FormData(form);
-        return Object.fromEntries(formData.entries());
+        const data = {};
+
+        const inputs = form.querySelectorAll("select, input");
+
+        inputs.forEach(input => {
+            if(input.name){
+                data[input.name] = input.value;
+            }
+        });
+        
+        return data;
     },
 
     renderTable: function(users){
         const tbody = document.getElementById("user-table-body");
+        if (!tbody) return;
         tbody.innerHTML = "";
 
         users.forEach(user => {
@@ -52,10 +62,10 @@ export const view = {
                 <tr>
                     <td>${user.nombre}</td>
                     <td>${user.cuenta}</td>
-                    <td>${user.perfil}</td>
+                    <td>${user.perfil == "1" ? "Operador" : "Administrador"}</td>
                     <td>${user.correo}</td>
                     <td>
-                        <a href="app/resources/views/user/edit.html?id=${user.id}" class="btn btn-sm btn-outline-primary" title="Editar">
+                        <a href="app/resources/views/user/edit.php?id=${user.id}" class="btn btn-sm btn-outline-primary" title="Editar">
                             <i class="bi bi-pencil"></i>
                         </a>
                     </td>

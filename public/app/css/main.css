@@ -4,6 +4,16 @@ nav.navbar {
   padding-bottom: 0;
 }
 
+#breadcrumb{
+  background-color: #2d5a27 !important;
+}
+
+#ol-breadcrumb{
+  --bs-breadcrumb-divider: '>';
+   font-size: 0.8rem;
+    --bs-breadcrumb-divider-color: rgba(255,255,255,0.4);
+}
+
 .navbar-nav .nav-link {
   color: #ffffff !important;
   font-weight: 500;
