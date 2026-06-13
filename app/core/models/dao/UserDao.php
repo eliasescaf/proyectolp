@@ -6,7 +6,7 @@ use app\core\models\dao\base\BaseDao;
 use app\core\models\dao\base\InterfaceDao;
 use app\core\models\dto\UserDto;
 
-final class UserDao extends BaseDao  {
+final class UserDao extends BaseDao implements InterfaceDao{
 
     public function __construct(protected \PDO $conn) {
         parent::__construct($conn, "usuarios");
@@ -25,24 +25,21 @@ final class UserDao extends BaseDao  {
         return $result ? $result : null;
     }
 
-    public function save(UserDto $dto): void {
-        $this->validateCuenta($dto->getId(), $dto->getCuenta());
-        $this->validateCorreo($dto->getId(), $dto->getCorreo());
-        
-        $sql = "INSERT INTO {$this->table} (nombre, cuenta, perfil, correo, contraseña, fechaAlta, estado, resetPass) 
-                VALUES (:nombre, :cuenta, :perfil, :correo, :contrasenia, :fechaAlta, :estado, :resetPass)";
+    public function save(array $data): void {
+        $this->validateCuenta(0, $data['cuenta']);
+        $this->validateCorreo(0, $data['correo']);
+
+        $sql = "INSERT INTO {$this->table} (nombre, cuenta, perfil, correo, contraseña) 
+                VALUES (:nombre, :cuenta, :perfil, :correo, :contrasenia)";
                 
         $stmt = $this->conn->prepare($sql);
         
         $stmt->execute([
-        ':nombre'      => $dto->getNombre(),
-        ':cuenta'      => $dto->getCuenta(),
-        ':perfil'      => $dto->getPerfil(),
-        ':correo'      => $dto->getCorreo(),
-        ':contrasenia' => $dto->getContraseña(), 
-        ':fechaAlta'   => $dto->getFechaAlta(), // ¡Ahora sí va a mandar "2026-06-01"!
-        ':estado'      => $dto->getEstado(),
-        ':resetPass'   => $dto->getResetPass()
+        ':nombre'      => $data['nombre'],
+        ':cuenta'      => $data['cuenta'],
+        ':perfil'      => $data['perfil'],
+        ':correo'      => $data['correo'],
+        ':contrasenia' => $data['contraseña']
         ]);
     }
         
@@ -71,6 +68,24 @@ final class UserDao extends BaseDao  {
             ':estado' => $data['estado'],
             ':resetPass' => $data['resetPass'],
         ]);
+    }
+
+    public function login(string $cuenta): array{
+        $sql = "SELECT user.id, user.nombre, user.cuenta, user.perfil, user.correo, user.contraseña, user.estado, user.resetPass";
+        $sql .= " FROM usuarios AS user";
+        $sql .= " WHERE (cuenta = :cuenta OR correo = :cuenta)";
+        $result = $this->selectQuery($sql, ["cuenta" => $cuenta]);
+        if(count($result) != 1){
+            throw new \Exception("El nombre de usuario o la contraseña no coinciden");
+        }
+        return $result[0];
+    }
+
+    public function updatePassword(array $data): void{
+        $sql = "UPDATE {$this->table}";
+        $sql = " SET contraseña =: contraseña";
+        $sql = " WHERE id = :id";
+        $this->updateQuery($sql, $data);
     }
 
     public function delete(int $id): void {

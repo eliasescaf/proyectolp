@@ -70,7 +70,7 @@ export const view = {
                     <td>${item.precio}</td>
                     <td>${item.stock}</td>
                     <td>
-                        <a href="app/resources/views/item/edit.php?id=${item.id}" class="btn btn-sm btn-outline-primary" title="Editar">
+                        <a href="item/edit?id=${item.id}" class="btn btn-sm btn-outline-primary" title="Editar">
                             <i class="bi bi-pencil"></i>
                         </a>
                     </td>
@@ -94,7 +94,7 @@ export const view = {
         }
 
         document.getElementById("riego-data").value = item.riego;
-        
+
         document.getElementById("descripcion-data").value = item.descripcion; 
         const catSelect = document.getElementById("categoria-data");
         if(item.categoria == "Interior"){

@@ -65,7 +65,7 @@ export const view = {
                     <td>${user.perfil == "1" ? "Operador" : "Administrador"}</td>
                     <td>${user.correo}</td>
                     <td>
-                        <a href="app/resources/views/user/edit.php?id=${user.id}" class="btn btn-sm btn-outline-primary" title="Editar">
+                        <a href="user/edit?id=${user.id}" class="btn btn-sm btn-outline-primary" title="Editar">
                             <i class="bi bi-pencil"></i>
                         </a>
                     </td>

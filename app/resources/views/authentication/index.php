@@ -1,16 +1,3 @@
-<!doctype html>
-<html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <base href="http://localhost/lab_prog_2026_escalante_fuentes_elias/" />
-    <link rel="stylesheet" href="public/app/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="public/app/css/authentication-index.css" />
-    <link rel="stylesheet" href="public/app/css/bootstrap-icons.css" />
-    <script src="public/app/js/bootstrap.bundle.min.js" defer></script>
-    <title>Plantín - Iniciar sesión</title>
-  </head>
-  <body class="bg-light vh-100 w-100 d-flex align-items-center p-0 m-0">
     <div class="w-50 h-100 d-none d-md-block position-relative">
       <div class="texto-flotante"><i class="bi bi-tree me-2"></i>Plantín</div>
       <img
@@ -27,7 +14,7 @@
             Obtenga sus plantas junto a nosotros
           </p>
         </div>
-        <form action="app/resources/views/home/index.php" autocomplete="off">
+        <form id="login-form" action="home/index" autocomplete="off">
           <div class="mb-3">
             <label for="usuario-data" class="form-label">Usuario</label>
             <div class="input-group">
@@ -68,5 +55,3 @@
         </form>
       </div>
     </div>
-  </body>
-</html>

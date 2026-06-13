@@ -1,7 +1,7 @@
 <?php
 
-const APP_URL = "http://localhost/lab_prog_2026_escalante_fuentes_elias/";
-define('APP_URI', $_SERVER['DOCUMENT_ROOT'] . 'lab_prog_2026_escalante_fuentes_elias/app/');
+const APP_URL = "http://localhost/lab_prog_2026_escalante_fuentes_elias/public/";
+define('APP_URI', $_SERVER['DOCUMENT_ROOT'] . '/lab_prog_2026_escalante_fuentes_elias/app/');
 
 define('APP_DIR_TEMPLATE', APP_URI . 'resources/template/');
 define('APP_DIR_VIEWS', APP_URI . 'resources/views/');
@@ -21,4 +21,18 @@ const APP_AUTHENTICATION_CONTROLLER = "authentication";
 const APP_LOGIN_ACTION = "login";
 const APP_LOGOUT_ACTION = "logout";
 
-const APP_TOKEN = 
+const APP_TOKEN = "2026"; 
+
+const SESSION_FINISHED = 0;
+const SESSION_PASSWORD_CHANGE = 1;
+const SESSION_NOT_AUTHORIZED = 2;
+const SESSION_OUT_OF_TIME = 3;
+const SESSION_DISABLED_ACCOUNT = 4;
+const SESSION_CONTROLLER_WITHOUT_PRIVILEGES = 5;
+const SESSION_MENSAJES = array(
+    0 => "¡Sesión finalizada!",
+    1 => "¡Su clave fue cambiada!",
+    2 => "¡Acceso no autorizado!",
+    3 => "¡Acceso fuera de horario!",
+    4 => "¡Su cuenta ha sido desactivada!",
+    5 => "¡Su cuenta no tiene permisos para acceder al módulo!");

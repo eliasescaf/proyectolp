@@ -22,7 +22,7 @@ final class UserService extends BaseService{
         $listaAnidada = $this->dao->list($filters);
         $listaDTOs = [];
         forEach($listaAnidada as $usuario){
-            $listaDTOs = new UserDto($usuario);
+            $listaDTOs[] = new UserDto($usuario);
         }
         return $listaDTOs;
     }

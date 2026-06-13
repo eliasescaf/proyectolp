@@ -16,11 +16,25 @@ class ItemController extends BaseController{
     }
 
     public function index(Request $request, Response $response){
+        $this->breadcrumb = [
+            "Inicio" => "home/index",
+            "Productos" => null
+        ];
+        $this->scripts = [
+            'app/assets/libs/jspdf.umd.min.js',
+            'app/assets/libs/jspdf.plugin.autotable.min.js'
+        ];
+        array_push($this->modules, "app/js/item/index.js");
         $this->setCurrentView($request);
         require_once(APP_FILE_TEMPLATE);
     }
 
     public function create(Request $request, Response $response){
+        $this->breadcrumb = [
+            "Inicio" => "home/index",
+            "Productos" => "item",
+            "Nuevo producto" => null
+        ];
         array_push($this->modules, "app/js/item/create.js");
         $this->setCurrentView($request);
         require_once(APP_FILE_TEMPLATE);
@@ -36,6 +50,16 @@ class ItemController extends BaseController{
     }
 
     public function edit(Request $request, Response $response){
+        $this->breadcrumb = [
+            "Inicio" => "home/index",
+            "Productos" => "item",
+            "Editar producto" => null
+        ];
+        $this->scripts = [
+            'app/assets/libs/jspdf.umd.min.js',
+            'app/assets/libs/jspdf.plugin.autotable.min.js'
+        ];
+        array_push($this->modules, "app/js/item/edit.js");
         $this->setCurrentView($request);
         require_once(APP_FILE_TEMPLATE);
     }

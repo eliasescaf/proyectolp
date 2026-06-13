@@ -86,7 +86,7 @@ export const controller = {
                 view.showMessage("¡Registro creado en base de datos!", "success");
 
                 setTimeout(() => {
-                    window.location.href = "app/resources/views/item/index.php";
+                    window.location.href = "item/index";
                 }, 1500);
             })
             .catch(error => {
@@ -114,7 +114,7 @@ export const controller = {
             html: `Se ha eliminado a: <b>${item.nombre}</b>`,
             showConfirmButton: false,
             icon: "warning",
-            footer: '<a href="app/resources/views/item/index.php">Volver al listado</a>' 
+            footer: '<a href="item/index">Volver al listado</a>' 
         });
             this.list(); 
         }
@@ -173,9 +173,7 @@ export const controller = {
             startY: 40,
             theme: 'striped',
             headStyles: { fillColor: [40, 167, 69]},
-            columnStyles: {
-            4: { display: 'none' } 
-            },
+            columns: [0, 1, 2, 3, 4, 5, 6]
         });
 
         doc.save("listado_plantas.pdf");

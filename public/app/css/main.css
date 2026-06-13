@@ -79,3 +79,18 @@ img {
 #input-nombre {
   flex: 0 0 100% !important;
 }
+
+#form-entero {
+  width: 85%;
+}
+
+.texto-flotante {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  z-index: 10;
+  color: white;
+  font-weight: bold;
+  font-size: 20px;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}

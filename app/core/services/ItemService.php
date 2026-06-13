@@ -7,7 +7,7 @@ use app\core\models\dto\ItemDto;
 use app\core\services\base\BaseService;
 use app\libs\database\Connection; 
 
-final class ItemService extends BaseService {
+final class ItemService extends BaseService{
 
     function __construct() {
         parent::__construct(new ItemDao(Connection::get()));
@@ -50,6 +50,10 @@ final class ItemService extends BaseService {
             throw new \Exception("El campo <strong>nombre</strong> es obligatorio.");
         }
         
+        if (strlen(trim($dto->getCodigo())) === 0) {
+            throw new \Exception("El campo <strong>código</strong> es obligatorio para registrar el producto.");
+        }
+
         if ($dto->getStock() < 0) {
             throw new \Exception("El <strong>stock</strong> del ítem no puede ser un número negativo.");
         }

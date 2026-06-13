@@ -28,14 +28,21 @@ export const controller = {
         const btnPdfModal = document.querySelector(".btnImprimirTicketModal");
         if (btnPdfModal) {
             btnPdfModal.addEventListener("click", (e) => {
-                // Leemos el ID que le inyectamos en el paso 1
                 const idVenta = btnPdfModal.getAttribute("data-id");
                 
                 if (idVenta) {
                     this.exportToPDF(idVenta);
                 }
             });
-        }
+        };
+
+        const btnListado = document.querySelector(".btnExportarListado");
+        if(btnListado){
+            btnListado.addEventListener("click", () =>{
+                this.exportListToPDF();
+            });
+        };
+
     },
 
     mostrarDetalleModal: function(id){
@@ -119,6 +126,31 @@ export const controller = {
             { align: 'right' }
         );
         doc.save(`comprobante_venta_${venta.id}.pdf`);
+    },
+
+    exportListToPDF: function(){
+        if (!window.jspdf) {
+        console.error("jsPDF no está cargado");
+        return;
+        }
+
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+
+        doc.setFontSize(16);
+        doc.text("Listado de ventas: ", 14, 20);
+
+        doc.setFontSize(12);
+
+        doc.autoTable({
+            html:"#sales-table",
+            startY: 40,
+            theme: 'striped',
+            headStyles: { fillColor: [40, 167, 69]},
+            columns: [0, 1, 2, 3]
+        });
+
+        doc.save("listado_ventas.pdf");
     },
 
     bindEventsCreate: function(){

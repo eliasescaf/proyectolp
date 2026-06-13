@@ -79,7 +79,7 @@ export const controller = {
           view.showMessage("Registro creado!", "success");
 
           setTimeout(() => {
-            window.location.href = "app/resources/views/user/index.php";
+            window.location.href = "user/index";
           }, 1500);
         }
     },
@@ -103,7 +103,7 @@ export const controller = {
             html: `Se ha eliminado a: <b>${user.nombre}</b>`,
             showConfirmButton: false,
             icon: "warning",
-            footer: '<a href="app/resources/views/user/index.php">Volver al listado</a>' 
+            footer: '<a href="user/index">Volver al listado</a>' 
         });
             this.list(); 
         }
@@ -156,9 +156,7 @@ export const controller = {
             startY: 40,
             theme: 'striped',
             headStyles: { fillColor: [40, 167, 69]},
-            columnStyles: {
-            4: { display: 'none' } 
-            },
+            columns: [0, 1, 2, 3]
         });
 
         doc.save("listado_usuarios.pdf");

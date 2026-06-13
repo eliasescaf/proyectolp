@@ -17,37 +17,31 @@
         }
     ?>
 </head>
-<body data-bs-theme="light" class="bg-body-secondary bg-gradient">
+<body data-bs-theme="light" class="d-flex flex-column min-vh-100">
     <header>
-        <h1>HEADER DE LA PLANTILLA</h1>
         <?php
-            // require_once APP_DIR_TEMPLATE . "includes/menu.php";
-            // require_once APP_DIR_TEMPLATE . "includes/breadcrumb.php";
+            require_once APP_DIR_TEMPLATE . "includes/menu.php";
+            require_once APP_DIR_TEMPLATE . "includes/breadcrumb.php";
         ?>
     </header>
-    <main>
-        <div class="bg-body bg-gradient text-center m-1 m-md-3 py-3 px-1 px-lg-3 px-xxl-5 border rounded">
+    <main class="flex-grow-1 w-100 position-relative">
         <?php
             require_once APP_DIR_VIEWS . $this->view;
         ?>
-        </div>
     </main>
     <footer>
-        <h4>FOOTER DE LA PLANTILLA</h4>
         <?php
-            // require_once APP_DIR_TEMPLATE . "includes/footer.php";
+            require_once APP_DIR_TEMPLATE . "includes/footer.php";
         ?>
     </footer>
-    <section>
-    <?php
-        // require_once APP_DIR_TEMPLATE . 'includes/modals.php';
-
-        // if(isset($this->modals) && is_array($this->modals)){
-        //     foreach($this->modals as $modal){
-        //         require_once $modal;
-        //     }
-        // }
-    ?>
-    </section>
+    <?php if (isset($this->modals) && is_array($this->modals)){ ?>
+        <section>
+            <?php
+                foreach($this->modals as $modal){
+                    require_once $modal;
+                }
+            ?>
+        </section>
+    <?php } ?>
 </body>
 </html>

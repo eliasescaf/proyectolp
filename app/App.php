@@ -4,6 +4,7 @@ namespace app;
 
 use app\libs\pipeline\Pipeline;
 use app\libs\pipeline\middlewares\ExceptionHandlerMiddleware;
+use app\libs\pipeline\middlewares\AuthenticationMiddleware;
 use app\libs\pipeline\middlewares\RouterMiddleware;
 use app\libs\http\Request;
 use app\libs\http\Response;
