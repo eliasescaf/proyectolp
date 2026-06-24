@@ -6,7 +6,7 @@ use app\core\models\enums\PlantCategory;
 use app\core\models\enums\PlantWatering;
 
 final class ItemDto {
-    private string $nombre, $codigo,$descripcion, $fechaAlta;
+    private string $nombre, $codigo, $descripcion, $fechaAlta;
     private int $id, $riego, $categoria,$estado, $stock;
     private float $precio;
 
@@ -22,7 +22,7 @@ final class ItemDto {
         
         $estadoOriginal = $data['estado'] ?? 1;
         if ($estadoOriginal === "Activo") { $estadoOriginal = 1; }
-        if ($estadoOriginal === "Inactivo") { $estadoOriginal = 0; }
+        if ($estadoOriginal === "Discontinuo") { $estadoOriginal = 0; }
         $this->setEstado((int)$estadoOriginal);
 
         $this->setFechaAlta($data['fechaAlta'] ?? date("Y-m-d"));
@@ -30,7 +30,7 @@ final class ItemDto {
 
     /** GETTERS */
     public function getId(): int { return $this->id; }
-    public function getCodigo(): int { return $this->codigo; }
+    public function getCodigo(): string { return $this->codigo; }
     public function getEstado(): int { return $this->estado; }
     public function getPrecio(): float { return $this->precio; }
     public function getNombre(): string { return $this->nombre; }
@@ -55,7 +55,7 @@ final class ItemDto {
     }
 
     public function setStock(int $stock): void {
-        $this->stock = ($stock > 0) ? $stock : 0;
+        $this->stock = ($stock >= 0) ? $stock : 0;
     }
 
     public function setNombre(string $nombre): void {

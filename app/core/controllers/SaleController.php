@@ -47,6 +47,7 @@ class SaleController extends BaseController {
         try {
             $data = $request->getDataFromInput();
             $dto = new SaleDto($data);
+            $dto->setUsuarioId((int)$_SESSION['usuarioId']);
             $service = new SaleService();
             $service->save($dto);
 
@@ -58,10 +59,52 @@ class SaleController extends BaseController {
         }
     }
 
+    public function load(Request $request, Response $response){
+        try {
+            $id = $request->getId();
+            $service = new SaleService();
+            $saleDto = $service->load($id);
+            if(!$saleDto){
+                throw new \Exception("No se encontró la venta solicitada");
+            }
+            $response->setData($saleDto->toArray());
+            $response->send(true);
+        }
+        catch(\Exception $e){
+            $response->setMessage($e->getMessage());
+            $response->setData([]);
+            $response->send(false);
+        }
+    }
+
     public function edit(Request $request, Response $response) {}
 
     public function update(Request $request, Response $response) {}
     public function delete(Request $request, Response $response) {}
-    public function list(Request $request, Response $response) {}
+    public function list(Request $request, Response $response) {
+        try{
+            $filters = [
+                'page'   => $request->getParameterValue('page', 1),
+                'limit'  => $request->getParameterValue('limit', 10)
+            ];
+
+            $service = new SaleService();
+            $ventasDto = $service->list($filters);
+            $recordsArray = [];
+            foreach($ventasDto['records'] as $dto){
+                $recordsArray[] = $dto->toArray();
+            }
+            $response->setData([
+                'records' => $recordsArray,
+                'meta'    => $ventasDto['meta']
+            ]);
+            $response->send(true);
+        }
+        catch(\Exception $e){
+            $response->setMessage($e->getMessage());
+            $response->setData([]);
+            $response->send(false);
+        }
+    }
     public function suggestive(Request $request, Response $response) {}
 }

@@ -11,8 +11,6 @@ final class AuthenticationService{
     public function login(string $user, string $pass): void{
         $conn = Connection::get();
 
-        //AUTENTICACIÓN DEL USUARIO
-
         $usuarioDao = new UserDao($conn);
         $usuario = $usuarioDao->login($user);
 
@@ -36,9 +34,10 @@ final class AuthenticationService{
 
         $_SESSION["token"] = APP_TOKEN;
         $_SESSION["usuarioId"] = (int)$usuario["id"];
-        $_SESSION["usuario"] = $usuario["nombres"];
+        $_SESSION["usuario"] = $usuario["nombre"];
+        $_SESSION["cuenta"] = $usuario["cuenta"];
         $_SESSION["perfil"] = $usuario["perfil"];
-        $_SESSION["motivoCierreSesion"] = SESSION_FINISHED;
+        $_SESSION["motivoCierreSesion"] = 0;
     }
 
     public function logout():void{

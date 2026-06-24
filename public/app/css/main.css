@@ -94,3 +94,27 @@ img {
   font-size: 20px;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
+
+.form-switch .custom-switch-style {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23fff'/%3e%3c/svg%3e");
+}
+
+.form-switch .custom-switch-style:not(:checked) {
+    background-color: #dc3545; 
+    border-color: #dc3545;
+}
+
+.form-switch .custom-switch-style:checked {
+    background-color: #198754; 
+    border-color: #198754;
+}
+
+.custom-switch-style {
+    transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+    cursor: pointer;
+}
+
+.custom-switch-style:focus {
+    box-shadow: none;
+    border-color: rgba(0, 0, 0, 0.25); 
+}

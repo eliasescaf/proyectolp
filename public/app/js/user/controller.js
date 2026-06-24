@@ -1,6 +1,9 @@
 import { view } from "./view.js";
 import { service } from "./service.js";
 
+let paginaActual = 1;
+
+
 export const controller = {
     init: function(){
         this.list();
@@ -58,60 +61,115 @@ export const controller = {
                 this.exportListToPDF();
             });
         };
+
+        const toggle = document.getElementById("estado-toggle");
+        const estadoData = document.getElementById("estado-data");
+
+        if (toggle && estadoData) {
+        toggle.addEventListener("change", (e) => {
+            if (e.target.checked) {
+            estadoData.textContent = "Activo";
+            estadoData.className = "text-success fw-bold small";
+            } else {
+            estadoData.textContent = "Inactivo";
+            estadoData.className = "text-danger fw-bold small";
+            }
+        });
+        }
         
     },
 
     load: function(id){
-        const data = service.load(id);
-        view.renderForm(data);
-        view.enableForm(false);
+        service.load(id).then(data => {
+            if(data){
+                view.renderForm(data);
+            }
+            else{
+                view.showMessage("Error al cargar usuario", "error");
+            }
+        })
     },
 
     save: function(){
         const data = view.getFormData();
-
-        if (data.contraseña !== data["contraseña2-data"]) {
-        view.showMessage("Las contraseñas no coinciden", "error");
-        return;
+        if(data.contraseña !== data["contraseña2-data"]){
+            view.showMessage("Las contraseñas no coinciden", "error");
+            return;
         }
-
-        if(service.save(data)){
-          view.showMessage("Registro creado!", "success");
-
-          setTimeout(() => {
-            window.location.href = "user/index";
-          }, 1500);
-        }
+        service.save(data).then(result => {
+            if(result.success){
+                view.showMessage("Registro guardado", "success");
+                setTimeout(() => {
+                    window.location.href = "user/index";
+                }, 1500);
+            } else {
+                view.showMessage(result.message, "error");
+            }
+        })
     },
 
     update: function(){
         const data = view.getFormData();
-        console.log(data);
-        if(service.update(data)){
-            view.showMessage("Registro actualizado!", "success");
-            document.getElementById("user-id").value = data.id;
-            view.enableForm(false);
-        }
+        console.log("Datos reales que viajan al backend:", JSON.stringify(data, null, 2));
+        service.update(data).then(result => {
+            if(result.success){
+                view.showMessage("Registro actualizado", "success");
+                setTimeout(() => {
+                    window.location.href = "user/index";
+                }, 1500);
+            } else {
+                view.showMessage(result.message, "error");
+            }
+        })
     },
 
     delete: function(id){
-        const user = service.load(id);
-        
-        if (service.delete(id)) {
         Swal.fire({
-            title: "¡Registro eliminado!",
-            html: `Se ha eliminado a: <b>${user.nombre}</b>`,
-            showConfirmButton: false,
+            title: "¿Estás seguro?",
+            text: "Esta acción no se puede deshacer",
             icon: "warning",
-            footer: '<a href="user/index">Volver al listado</a>' 
+            showCancelButton: true,
+            confirmButtonText: "Sí, eliminar",
+            confirmButtonColor: "#dc3545",
+            cancelButtonText: "Cancelar",
+            cancelButtonColor: "#636366"
+        }).then((result) => {
+            if(result.isConfirmed){
+                service.delete(id).then(response => {
+                    if (response.success) {
+                        view.showMessage("Registro eliminado", "success");
+                        setTimeout(() => {
+                            window.location.href = "user/index";
+                        }, 1500);
+                    } else {
+                        Swal.fire({
+                            title: "Acción Bloqueada",
+                            text: response.message, 
+                            icon: "info", 
+                            confirmButtonColor: "#1c1c1e"
+                        });
+                    }
+                });
+            }
         });
-            this.list(); 
-        }
     },
 
     list: function(){
-        const data = service.list()
-        view.renderTable(data);        
+        service.list({ page: paginaActual, limit: 10 }).then(res => {
+            
+            if (res.success && res.data) {
+                view.renderTable(res.data.records);
+                view.renderPaginador(res.data.meta, (nroPaginaSeleccionada) => {
+                    paginaActual = nroPaginaSeleccionada; 
+                    this.list();
+                });
+            } else {
+                view.renderTable(res); 
+            }
+
+        }).catch(err => {
+            console.error("Hubo un problema al listar usuarios", err);
+        });
     },
 
     exportToPDF: function(){
@@ -148,6 +206,11 @@ export const controller = {
 
         doc.setFontSize(16);
         doc.text("Listado de usuarios: ", 14, 20);
+
+        const hoy = new Date();
+        const fechaFormateada = hoy.toLocaleDateString("es-AR");
+        doc.setFontSize(10);
+        doc.text(`Fecha de emisión: ${fechaFormateada}`, 14, 26);
 
         doc.setFontSize(12);
 

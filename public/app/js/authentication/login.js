@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const formData = new FormData(form);
         try{
             const response = await fetch("authentication/login", {
-                method = "POST",
+                method: "POST",
                 body: formData
             });
 
@@ -16,7 +16,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     title: '¡Bienvenido!',
                     text: result.message,
                     showConfirmButton: false,
-                    timer: 1500
+                    timer: 1500,
+                    heightAuto: false
                 }).then(() => {
                     window.location.href = "home/index";
                 });
@@ -25,8 +26,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 Swal.fire({
                     icon: 'error',
                     title: 'Oops...',
-                    html: result.message,
-                    confirmButtonColor: '#3085d6'
+                    text: result.message,
+                    confirmButtonColor: '#3085d6',
+                    heightAuto: false
                 });
             }
         }
@@ -36,6 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 icon: 'error',
                 title: 'Error de conexión',
                 text: 'No se pudo conectar con el servidor. Intentá más tarde.',
+                heightAuto: false
             });
         }
     })

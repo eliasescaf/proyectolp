@@ -3,12 +3,12 @@
 namespace app\core\controllers;
 
 use app\core\controllers\base\BaseController;
-use app\core\models\dto\ItemDto;
-use app\core\services\ItemService;
+use app\core\models\dto\ClientDto;
+use app\core\services\ClientService;
 use app\libs\http\Request;
 use app\libs\http\Response;
 
-class ItemController extends BaseController{
+class ClientController extends BaseController{
     
     public function __construct()
     {
@@ -18,13 +18,13 @@ class ItemController extends BaseController{
     public function index(Request $request, Response $response){
         $this->breadcrumb = [
             "Inicio" => "home/index",
-            "Productos" => null
+            "Clientes" => null
         ];
         $this->scripts = [
             'app/assets/libs/jspdf.umd.min.js',
             'app/assets/libs/jspdf.plugin.autotable.min.js'
         ];
-        array_push($this->modules, "app/js/item/index.js");
+        array_push($this->modules, "app/js/client/index.js");
         $this->setCurrentView($request);
         require_once(APP_FILE_TEMPLATE);
     }
@@ -32,35 +32,43 @@ class ItemController extends BaseController{
     public function create(Request $request, Response $response){
         $this->breadcrumb = [
             "Inicio" => "home/index",
-            "Productos" => "item",
-            "Nuevo producto" => null
+            "Clientes" => "client",
+            "Nuevo cliente" => null
         ];
-        array_push($this->modules, "app/js/item/create.js");
+        array_push($this->modules, "app/js/client/create.js");
         $this->setCurrentView($request);
         require_once(APP_FILE_TEMPLATE);
     }
 
     public function save(Request $request, Response $response){
-        $data = $request->getDataFromInput();
-        $dto = new ItemDto($data);
-        $service = new ItemService();
-        $service->save($dto);
-        $response->setMessage("Se registró el item con éxito.");
-        $response->send();
+        try {
+            $data = $request->getDataFromInput();
+            $dto = new ClientDto($data);
+            $service = new ClientService();
+            
+            $service->save($dto);
+            $response->setMessage("Se registró el cliente con éxito.");
+            $response->send(true); 
+        }
+        catch(\Exception $e){
+            $response->setMessage($e->getMessage());
+            $response->setData([]);
+            $response->send(false);
+        }
     }
 
     public function edit(Request $request, Response $response){
         $this->breadcrumb = [
             "Inicio" => "home/index",
-            "Productos" => "item",
-            "Editar producto" => null
+            "Clientes" => "client",
+            "Editar cliente" => null
         ];
         $this->scripts = [
             'app/assets/libs/jspdf.umd.min.js',
             'app/assets/libs/jspdf.plugin.autotable.min.js',
-            'app/js/item/edit.js'
+            'app/js/client/edit.js'
         ];
-        array_push($this->modules, "app/js/item/edit.js");
+        array_push($this->modules, "app/js/client/edit.js");
         $this->setCurrentView($request);
         require_once(APP_FILE_TEMPLATE);
     }
@@ -68,11 +76,11 @@ class ItemController extends BaseController{
     public function update(Request $request, Response $response){
         try {
             $data = $request->getDataFromInput();
-            $dto = new ItemDto($data);
+            $dto = new ClientDto($data);
 
-            $service = new ItemService();
+            $service = new ClientService();
             $service->update($dto);
-            $response->setMessage("Se actualizó el item con éxito.");
+            $response->setMessage("Se actualizó el cliente con éxito.");
             $response->send();
         }
         catch(\Exception $e){
@@ -85,9 +93,9 @@ class ItemController extends BaseController{
     public function delete(Request $request, Response $response){
         try {
             $id = $request->getId();
-            $service = new ItemService();
+            $service = new ClientService();
             $service->delete($id);
-            $response->setMessage("Se eliminó el item con éxito.");
+            $response->setMessage("Se eliminó el cliente con éxito.");
             $response->send();
         }
         catch(\Exception $e){
@@ -102,17 +110,17 @@ class ItemController extends BaseController{
                 'page'   => $request->getParameterValue('page', 1),
                 'limit'  => $request->getParameterValue('limit', 10)
             ];
-
-            $service = new ItemService();
-            $itemsDto = $service->list();
+            
+            $service = new ClientService();
+            $clientsDto = $service->list();
 
             $recordsArray = [];
-            foreach($itemsDto['records'] as $dto){
+            foreach($clientsDto['records'] as $dto){
                 $recordsArray[] = $dto->toArray();
             }
             $response->setData([
                 'records' => $recordsArray,
-                'meta'    => $itemsDto['meta']
+                'meta'    => $clientsDto['meta']
             ]);
             $response->send(true);
         }
@@ -126,12 +134,12 @@ class ItemController extends BaseController{
     public function load(Request $request, Response $response){
         try {
             $id = $request->getId();
-            $service = new ItemService();
-            $itemDto = $service->load($id);
-            if(!$itemDto){
-                throw new \Exception("No se encontró el item solicitado");
+            $service = new ClientService();
+            $clientDto = $service->load($id);
+            if(!$clientDto){
+                throw new \Exception("No se encontró el cliente solicitado");
             }
-            $response->setData($itemDto->toArray());
+            $response->setData($clientDto->toArray());
             $response->send(true);
         }
         catch(\Exception $e){
@@ -141,9 +149,9 @@ class ItemController extends BaseController{
         }
     }
 
-    public function suggestive(Request $request, Response $response) {
+    public function suggestive(Request $request, Response $response){
         try {
-            $service = new ItemService();
+            $service = new ClientService();
             
             $filters = $request->getDataFromInput() ?? []; 
             if (empty($filters) && isset($_GET['valueToSearch'])) {

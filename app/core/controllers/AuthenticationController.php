@@ -8,6 +8,7 @@ use app\libs\http\Request;
 use app\libs\http\Response;
 
 class AuthenticationController extends BaseController{
+    protected string $errorLogin = "";
     
     public function __construct()
     {
@@ -17,30 +18,36 @@ class AuthenticationController extends BaseController{
     public function index(Request $request, Response $response){
         $this->scripts = [
             'app/assets/libs/jspdf.umd.min.js',
-            'app/assets/libs/jspdf.plugin.autotable.min.js'
+            'app/assets/libs/jspdf.plugin.autotable.min.js',
+            'app/js/authentication/login.js'
         ];
+        $this->errorLogin = "";
         $this->setCurrentView($request);
         require_once(APP_DIR_TEMPLATE . 'auth_template.php');
     }
 
     public function login(Request $request, Response $response){
         try {
-            $user = $_POST['user'] ?? '';
-            $pass = $_POST['pass'] ?? '';
+
+            $this->errorLogin = ""; 
+            $user = $request->getParameterValue('usuario-data', '');
+            $pass = $request->getParameterValue('password-data', '');
+
+            if(empty($user) || empty($pass)){
+                throw new \Exception("Debe ingresar un usuario y una contraseña.");
+            }
             
             $service = new AuthenticationService();
             $service->login($user, $pass);
             
-            $request->setController(APP_DEFAULT_CONTROLLER); 
-            $request->setAction(APP_DEFAULT_ACTION);         
-            
-            $this->setCurrentView($request);
-            require_once(APP_FILE_TEMPLATE);
+            $response->setMessage("Autenticación exitosa. Redirigiendo...");
+            $response->setData([]);
+            $response->send(true);   
             
         } catch (\Exception $e) {
             $response->setMessage($e->getMessage());
-            $this->setCurrentView($request);
-            require_once(APP_DIR_TEMPLATE . 'auth_template.php');
+            $response->setData([]);
+            $response->send(false);
         }
     }
 

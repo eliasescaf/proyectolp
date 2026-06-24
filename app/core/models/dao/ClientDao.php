@@ -5,85 +5,80 @@ namespace app\core\models\dao;
 use app\core\models\dao\base\BaseDao;
 use app\core\models\dao\base\InterfaceDao;
 
-final class ItemDao extends BaseDao implements InterfaceDao{
+final class ClientDao extends BaseDao implements InterfaceDao {
 
     public function __construct(protected \PDO $conn) {
-        parent::__construct($conn, "items");
+        parent::__construct($conn, "clientes");
     }
 
     public function load(int $id): array {
-        $sql = "SELECT id, nombre, codigo, riego, descripcion, categoria, precio, stock, estado, fechaAlta
+        $sql = "SELECT id, nombre, dni, telefono, email, razon_social AS razon, cuit_cuil AS cuit, estado, fecha_alta AS fechaAlta
         FROM {$this->table}
         WHERE id = :id
         LIMIT 1";
         $stmt = $this->conn->prepare($sql);
         $stmt->execute([':id' => $id]);
 
-        $result = $stmt->fetch(\PDO::FETCH_ASSOC) ?: [];
-
-        return $result ? $result : [];
+        return $stmt->fetch(\PDO::FETCH_ASSOC) ?: [];
     }
 
     public function save(array $data): void {
-        $sql = "INSERT INTO {$this->table} (nombre, codigo, riego, descripcion, categoria, precio, stock, fechaAlta) 
-                VALUES (:nombre, :codigo, :riego, :descripcion, :categoria, :precio, :stock, NOW())";
+        $sql = "INSERT INTO {$this->table} (nombre, dni, telefono, email, razon_social, cuit_cuil, fecha_alta) 
+                VALUES (:nombre, :dni, :telefono, :email, :razon, :cuit, NOW())";
                 
         $stmt = $this->conn->prepare($sql);
         
         $stmt->execute([
-            ':nombre'      => $data['nombre'],
-            ':codigo' => $data['codigo'],
-            ':riego'      => $data['riego'],
-            ':descripcion'      => $data['descripcion'],
-            ':categoria'      => $data['categoria'],
-            ':precio' => $data['precio'], 
-            ':stock'   => $data['stock'],
+            ':nombre'    => $data['nombre'],
+            ':dni'       => $data['dni'],
+            ':telefono'  => $data['telefono'],
+            ':email'     => $data['email'],
+            ':razon'     => $data['razon'],
+            ':cuit'      => $data['cuit'], 
         ]);
     }
         
     public function update(array $data): void {
         $sql = "UPDATE {$this->table}
                 SET nombre = :nombre,
-                    codigo = :codigo,
-                    riego = :riego,
-                    descripcion = :descripcion,
-                    categoria = :categoria,
-                    precio = :precio,
-                    stock = :stock,
+                    dni = :dni,
+                    telefono = :telefono,
+                    email = :email,
+                    razon_social = :razon,
+                    cuit_cuil = :cuit,
                     estado = :estado
                 WHERE id = :id";
 
         $stmt = $this->conn->prepare($sql);
         $stmt->execute([
-            ':id'          => $data['id'],
-            ':nombre'      => $data['nombre'],
-            ':codigo'      => $data['codigo'],
-            ':riego'       => $data['riego'],
-            ':descripcion' => $data['descripcion'],
-            ':categoria'   => $data['categoria'],
-            ':precio'      => $data['precio'],
-            ':stock'       => $data['stock'],
-            ':estado'      => $data['estado'] 
+            ':nombre'    => $data['nombre'],
+            ':dni'       => $data['dni'],
+            ':telefono'  => $data['telefono'],
+            ':email'     => $data['email'],
+            ':razon'     => $data['razon'],
+            ':cuit'      => $data['cuit'], 
+            ':estado'    => $data['estado'],
+            ':id'        => $data['id']
         ]);
     }
 
     public function delete(int $id): void {
-        $sqlCheck = "SELECT COUNT(*) FROM ventas_detalle WHERE item_id = :id";
+        $sqlCheck = "SELECT COUNT(*) FROM ventas WHERE cliente_id = :id";
         $stmtCheck = $this->conn->prepare($sqlCheck);
         $stmtCheck->execute([':id' => $id]);
+        
         $resultado = $stmtCheck->fetch(\PDO::FETCH_ASSOC);
 
-        if($resultado && $resultado['COUNT(*)'] > 0){
-            throw new \Exception("No se puede eliminar el item porque tiene ventas asociadas. Se recomienda en todo caso, cambiar su estado a Discontinuado");
+        if ($resultado && $resultado['COUNT(*)'] > 0) {
+            throw new \Exception("No se puede eliminar el cliente porque tiene ventas asociadas. Se recomienda en todo caso, cambiar su estado a Inactivo.");
         }
-        $sql = "DELETE FROM {$this->table} where id = :id";
+
+        $sql = "DELETE FROM {$this->table} WHERE id = :id";
         $stmt = $this->conn->prepare($sql);
-        $stmt->execute([
-            ':id' => $id
-        ]);
+        $stmt->execute([':id' => $id]);
     }
 
-    public function list(array $filters): array {
+    public function list(array $filters = []): array {
         $limit = (int)($filters['limit'] ?? 10);
         $page = (int)($filters['page'] ?? 1);
         $offset = ($page - 1) * $limit;
@@ -93,11 +88,10 @@ final class ItemDao extends BaseDao implements InterfaceDao{
         $stmtCount->execute();
         $totalRecords = (int)$stmtCount->fetch(\PDO::FETCH_ASSOC)['total'];
 
-
-        $sqlData = "SELECT id, nombre, codigo, riego, descripcion, categoria, precio, stock, estado, fechaAlta 
-        FROM {$this->table}
-        ORDER BY id DESC
-        LIMIT :limit OFFSET :offset";
+        $sqlData = "SELECT id, nombre, dni, telefono, email, razon_social AS razon, cuit_cuil AS cuit, estado, fecha_alta AS fechaAlta 
+                FROM {$this->table}
+                ORDER BY id DESC
+                LIMIT :limit OFFSET :offset";
         $stmtData = $this->conn->prepare($sqlData);
         $stmtData->bindValue(':limit', $limit, \PDO::PARAM_INT);
         $stmtData->bindValue(':offset', $offset, \PDO::PARAM_INT);
@@ -117,7 +111,7 @@ final class ItemDao extends BaseDao implements InterfaceDao{
     }
 
     public function suggestive(array $filters): array {
-        $sql = "SELECT SQL_CALC_FOUND_ROWS id, codigo, nombre, precio, stock, estado
+        $sql = "SELECT SQL_CALC_FOUND_ROWS id, nombre, dni, razon_social, cuit_cuil, telefono, email
         FROM {$this->table}";
 
         $parameters = [];
@@ -126,7 +120,7 @@ final class ItemDao extends BaseDao implements InterfaceDao{
         $clauses["estado"] = "(estado = 1)";
 
         if (isset($filters["valueToSearch"]) && trim($filters["valueToSearch"]) !== "") {
-            $clauses["valueToSearch"] = "(nombre LIKE :value OR codigo LIKE :value)";
+            $clauses["valueToSearch"] = "(nombre LIKE :value OR dni LIKE :value OR cuit_cuil LIKE :value)";
             $parameters["value"] = "%" . $filters["valueToSearch"] . "%"; 
         }
 

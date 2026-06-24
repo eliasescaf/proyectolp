@@ -1,7 +1,7 @@
   <section id="form-cruds" class="d-flex flex-column pb-5">
     <div class="container px-4 px-lg-5">
       <div class="py-2 me-auto mt-3">
-        <h2 class="fw-bold">Gestión de usuarios</h2>
+        <h2 class="fw-bold">Gestión de Usuarios</h2>
         <p class="lead">Gestione las cuentas de sus usuarios</p>
       </div>
 
@@ -67,24 +67,12 @@
             </tbody>
           </table>
           <div class="d-flex flex-column flex-md-row justify-content-between align-items-center p-3 border-top bg-light">
-            <div class="small text-secondary mb-2 mb-md-0">
-              Mostrando <span class="fw-bold">1</span> a <span class="fw-bold">10</span> de <span class="fw-bold">100</span>
-              usuarios
+            <div id="txt-mostrando-paginas" class="small text-secondary mb-2 mb-md-0">
+              Cargando páginas...
             </div>
 
             <nav>
-              <ul class="pagination pagination-sm mb-0">
-                <li class="page-item disabled">
-                  <a class="page-link text-success" href="#">Anterior</a>
-                </li>
-                <li class="page-item active">
-                  <a class="page-link bg-success border-success" href="app/resources/views/user/index.php">1</a>
-                </li>
-                <li class="page-item"><a class="page-link text-success" href="#">2</a></li>
-                <li class="page-item"><a class="page-link text-success" href="#">3</a></li>
-                <li class="page-item">
-                  <a class="page-link text-success" href="#">Siguiente</a>
-                </li>
+              <ul id="ul-paginacion" class="pagination pagination-sm mb-0">
               </ul>
             </nav>
           </div>

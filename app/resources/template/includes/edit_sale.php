@@ -32,23 +32,15 @@
                 </tr>
               </thead>
               <tbody id="modal-detalle-body">
-                <tr>
-                  <td>Monstera Deliciosa</td>
-                  <td class="text-center">1</td>
-                  <td class="text-end">$5.500,00</td>
-                  <td class="text-end fw-bold">$5.500,00</td>
-                </tr>
-                <tr>
-                  <td>Lengua de Suegra</td>
-                  <td class="text-center">1</td>
-                  <td class="text-end">$2.500,00</td>
-                  <td class="text-end fw-bold">$2.500,00</td>
-                </tr>
               </tbody>
               <tfoot>
+                <tr class="table-light-subtle border-bottom-0">
+                  <td colspan="3" class="text-end fw-semibold text-secondary small py-2">Descuento aplicado:</td>
+                  <td id="modal-descuento-venta" class="text-end fw-bold text-danger small py-2">$0,00</td>
+                </tr>
                 <tr class="table-light">
-                  <td colspan="3" class="text-end fw-bold text-secondary">Monto Total:</td>
-                  <td id="modal-total-venta" class="text-end fw-bold text-success fs-5">$8.000,00</td>
+                  <td colspan="3" class="text-end fw-bold text-dark py-2">Monto Total:</td>
+                  <td id="modal-total-venta" class="text-end fw-bold text-success fs-5 py-2">$0,00</td>
                 </tr>
               </tfoot>
             </table>

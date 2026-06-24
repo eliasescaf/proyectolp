@@ -14,7 +14,7 @@
             Obtenga sus plantas junto a nosotros
           </p>
         </div>
-        <form id="login-form" action="home/index" autocomplete="off">
+        <form id="login-form" autocomplete="off">
           <div class="mb-3">
             <label for="usuario-data" class="form-label">Usuario</label>
             <div class="input-group">

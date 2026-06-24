@@ -7,18 +7,13 @@ export const controller = {
   init: function () {
     this.list();
     this.bindEvents();
-    this.initSuggestiveProduct();
   },
 
-  initSuggestiveProduct: function () {
-    const inputBusqueda = document.getElementById("input-sugestivo-producto");
+  initSuggestiveClient: function () {
+    const inputBusqueda = document.getElementById("input-sugestivo-cliente");
     const contenedorSugerencias = document.getElementById(
-      "contenedor-sugerencias",
+      "contenedor-sugerencias-cliente",
     );
-    const inputHiddenId = document.getElementById("producto-id-seleccionado");
-    const txtPrecioUnitario = document.getElementById("txt-precio-unitario");
-    const inputCantidad = document.getElementById("input-cantidad");
-
     const self = this;
 
     inputBusqueda?.addEventListener("keyup", async function (e) {
@@ -49,34 +44,31 @@ export const controller = {
         return;
       }
 
-      const res = await service.getSuggestions(query);
+      const res = await service.getClientSuggestions(query);
 
       if (res.success && res.data.records && res.data.records.length > 0) {
         contenedorSugerencias.innerHTML = "";
         contenedorSugerencias.style.display = "block";
 
-        res.data.records.forEach((item, index) => {
+        res.data.records.forEach((cliente) => {
           const li = document.createElement("li");
-          li.className =
-            "dropdown-item d-flex justify-content-between align-items-center item-sugerido";
-          li.setAttribute("data-index", index);
+          li.className = "dropdown-item py-2";
           li.style.cursor = "pointer";
 
           li.innerHTML = `
-                  <div>
-                      <span class="fw-bold text-dark">${item.nombre}</span>
-                      <small class="text-muted d-block">Mnemónico: ${item.codigo} | Stock: ${item.stock}</small>
-                  </div>
-                  <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1">$${parseFloat(item.precio).toLocaleString("es-AR", { minimumFractionDigits: 2 })}</span>
-              `;
+                          <div class="py-0">
+                              <span class="text-dark fw-medium d-block mb-0" style="font-size: 0.95rem;">${cliente.nombre}</span>
+                              <span class="text-muted" style="font-size: 0.8rem;">DNI/CUIT: ${cliente.documento || cliente.dni}</span>
+                          </div>
+                      `;
 
-          li.addEventListener("click", () => self.seleccionarItem(item));
+          li.addEventListener("click", () => self.seleccionarCliente(cliente));
 
           contenedorSugerencias.appendChild(li);
         });
       } else {
         contenedorSugerencias.innerHTML =
-          '<li class="dropdown-item text-muted small py-2">No se encontraron artículos...</li>';
+          '<li class="dropdown-item text-muted small py-2">No se encontró el cliente...</li>';
         contenedorSugerencias.style.display = "block";
       }
     });
@@ -88,22 +80,14 @@ export const controller = {
     });
   },
 
-  seleccionarItem: function (item) {
-    const inputBusqueda = document.getElementById("input-sugestivo-producto");
+  seleccionarCliente: function (cliente) {
+    const inputBusqueda = document.getElementById("input-sugestivo-cliente");
+    const inputHiddenId = document.getElementById("cliente-id-seleccionado");
 
-    inputBusqueda.value = item.nombre;
-    document.getElementById("producto-id-seleccionado").value = item.id;
-    document.getElementById("txt-precio-unitario").innerText =
-      `$${parseFloat(item.precio).toLocaleString("es-AR", { minimumFractionDigits: 2 })}`;
-
-    const inputCantidad = document.getElementById("input-cantidad");
-    inputCantidad.max = item.stock;
-    inputCantidad.value = 1;
-
-    inputBusqueda.setAttribute("data-precio", item.precio);
-    inputBusqueda.setAttribute("data-stock", item.stock);
-
-    document.getElementById("contenedor-sugerencias").style.display = "none";
+    inputBusqueda.value = cliente.nombre;
+    inputHiddenId.value = cliente.id;
+    document.getElementById("contenedor-sugerencias-cliente").style.display =
+      "none";
   },
 
   bindEvents: function () {
@@ -123,7 +107,7 @@ export const controller = {
     const btnCancelar = document.querySelector(".btnCancelar");
     if (btnCancelar) {
       btnCancelar.addEventListener("click", () => {
-        const id = document.getElementById("item-id").value;
+        const id = document.getElementById("client-id").value;
         this.load(id);
         view.enableForm(false);
       });
@@ -132,7 +116,7 @@ export const controller = {
     const btnEliminar = document.querySelector(".btnEliminar");
     if (btnEliminar) {
       btnEliminar.addEventListener("click", () => {
-        const id = document.getElementById("item-id").value;
+        const id = document.getElementById("client-id").value;
         this.delete(id);
       });
     }
@@ -168,7 +152,7 @@ export const controller = {
           estadoData.textContent = "Activo";
           estadoData.className = "text-success fw-bold small";
         } else {
-          estadoData.textContent = "Discontinuado";
+          estadoData.textContent = "Inactivo";
           estadoData.className = "text-danger fw-bold small";
         }
       });
@@ -180,7 +164,7 @@ export const controller = {
       if (data) {
         view.renderForm(data);
       } else {
-        view.showMessage("Error al cargar producto", "error");
+        view.showMessage("Error al cargar cliente", "error");
       }
     });
   },
@@ -191,7 +175,7 @@ export const controller = {
       if (result.success) {
         view.showMessage("Registro guardado", "success");
         setTimeout(() => {
-          window.location.href = "item/index";
+          window.location.href = "client/index";
         }, 1500);
       } else {
         view.showMessage(result.message, "error");
@@ -205,7 +189,7 @@ export const controller = {
       if (result.success) {
         view.showMessage("Registro actualizado", "success");
         setTimeout(() => {
-          window.location.href = "item/index";
+          window.location.href = "client/index";
         }, 1500);
       } else {
         view.showMessage(result.message, "error");
@@ -229,7 +213,7 @@ export const controller = {
           if (result.success) {
             view.showMessage("Registro eliminado", "success");
             setTimeout(() => {
-              window.location.href = "item/index";
+              window.location.href = "client/index";
             }, 1500);
           } else {
             Swal.fire({
@@ -259,7 +243,7 @@ export const controller = {
         }
       })
       .catch((err) => {
-        console.error("Hubo un problema al listar ventas", err);
+        console.error("Hubo un problema al listar productos", err);
       });
   },
 
@@ -272,30 +256,20 @@ export const controller = {
     const estado = document.getElementById("estado-data")?.textContent || "N/A";
     const fecha = document.getElementById("fecha-data")?.textContent || "N/A";
 
-    const riegoTexto =
-      data.riego === "1" ? "Bajo" : data.riego === "2" ? "Medio" : "Alto";
-    const catTexto =
-      data.categoria === "1"
-        ? "Interior"
-        : data.categoria === "2"
-          ? "Exterior"
-          : "Sombra";
-
     doc.setFontSize(16);
-    doc.text("Ficha de Planta", 14, 20);
+    doc.text("Ficha de Cliente", 14, 20);
 
     doc.setFontSize(12);
     doc.text(`Nombre: ${data.nombre}`, 14, 32);
-    doc.text(`Código: ${data.codigo || "N/A"}`, 14, 40);
-    doc.text(`Riego: ${riegoTexto}`, 14, 50);
-    doc.text(`Descripcion: ${data.descripcion}`, 14, 60);
-    doc.text(`Categoria: ${catTexto}`, 14, 70);
-    doc.text(`Precio: ${data.precio}`, 14, 80);
-    doc.text(`Stock: ${data.stock}`, 14, 90);
-    doc.text(estado, 14, 100);
-    doc.text(fecha, 14, 110);
+    doc.text(`DNI: ${data.dni || "N/A"}`, 14, 40);
+    doc.text(`Razón Social: ${data.razon || "N/A"}`, 14, 50);
+    doc.text(`CUIT/CUIL: ${data.cuit || "N/A"}`, 14, 60);
+    doc.text(`Teléfono: ${data.telefono || "N/A"}`, 14, 70);
+    doc.text(`Email: ${data.email || "N/A"}`, 14, 80);
+    doc.text(estado, 14, 90);
+    doc.text(fecha, 14, 100);
 
-    doc.save(`planta_${data.nombre}.pdf`);
+    doc.save(`cliente_${data.nombre}.pdf`);
   },
 
   exportListToPDF: function () {
@@ -308,7 +282,7 @@ export const controller = {
     const doc = new jsPDF();
 
     doc.setFontSize(16);
-    doc.text("Listado de plantas: ", 14, 20);
+    doc.text("Listado de clientes: ", 14, 20);
 
     const hoy = new Date();
     const fechaFormateada = hoy.toLocaleDateString("es-AR");
@@ -318,13 +292,13 @@ export const controller = {
     doc.setFontSize(12);
 
     doc.autoTable({
-      html: "#item-table",
+      html: "#client-table",
       startY: 40,
       theme: "striped",
       headStyles: { fillColor: [40, 167, 69] },
       columns: [0, 1, 2, 3, 4, 5, 6],
     });
 
-    doc.save("listado_plantas.pdf");
+    doc.save("listado_clientes.pdf");
   },
 };

@@ -18,8 +18,13 @@
           <a class="nav-link" href="sale/index"><i class="bi bi-cart3"></i> Ventas</a>
         </li>
         <li class="nav-item">
+          <a class="nav-link" href="client/index"><i class="bi bi-person-vcard"></i> Clientes</a>
+        </li>
+        <?php if(isset($_SESSION['perfil']) && $_SESSION['perfil'] === 2){ ?>
+        <li class="nav-item">
           <a class="nav-link" href="user/index"><i class="bi bi-people"></i> Usuarios</a>
         </li>
+        <?php } ?>
       </ul>
       <ul class="navbar-nav ms-auto">
         <li class="nav-item dropdown">
@@ -27,7 +32,7 @@
             <i class="bi bi-person-circle"></i> Mi cuenta
           </a>
           <ul class="dropdown-menu dropdown-menu-end">
-            <li><a class="dropdown-item" href="#">Mis datos</a></li>
+            <li><a class="dropdown-item" href="account/index">Mis datos</a></li>
             <li><hr class="dropdown-divider"></li>
             <li><a class="dropdown-item text-danger" href="authentication/index">Cerrar sesión</a></li>
           </ul>

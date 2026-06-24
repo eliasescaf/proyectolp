@@ -1,6 +1,6 @@
 export const view = {
     getForm: () => document.querySelector("#form-edit"),
-    getCampos : () => document.querySelectorAll("#form-edit input, #form-edit select, #form-edit textarea, #estado-toggle"),
+    getCampos : () => document.querySelectorAll("#form-edit input, #form-edit select, #estado-toggle"),
 
     enableForm: function(estado){
         const campos = this.getCampos();
@@ -14,6 +14,7 @@ export const view = {
                 campo.disabled = !estado;
             }
         });
+        
 
         if (toggle) toggle.disabled = !estado;
         if(btnActualizar) btnActualizar.disabled = !estado;
@@ -43,7 +44,7 @@ export const view = {
         const form = this.getForm();
         const data = {};
 
-        const inputs = form.querySelectorAll("select, input, textarea");
+        const inputs = form.querySelectorAll("select, input");
 
         inputs.forEach(input => {
             if(input.name){
@@ -51,6 +52,11 @@ export const view = {
             }
         });
         
+        const idInput = document.getElementById("client-id");
+        if (idInput) {
+            data['id'] = idInput.value;
+        }
+
         const toggle = document.getElementById("estado-toggle");
         if (toggle) {
             data['estado'] = toggle.checked ? 1 : 0;
@@ -59,26 +65,23 @@ export const view = {
         return data;
     },
 
-    renderTable: function(items){
-        const tbody = document.getElementById("item-table-body");
+    renderTable: function(clients){
+        const tbody = document.getElementById("client-table-body");
         if (!tbody) return;
         tbody.innerHTML = "";
 
-        items.forEach(item => {
-            const filaDesactivada = (item.estado == 0 || item.estado == "Discontinuado") ? "opacity-50 text-muted bg-light-subtle" : "";
-            const riegoTexto = item.riego == "1" ? "Bajo" : (item.riego == "2" ? "Medio" : "Alto");
-            const catTexto = item.categoria == "1" ? "Interior" : (item.categoria == "2" ? "Exterior" : "Sombra");
+        clients.forEach(client => {
+            const filaDesactivada = (client.estado == 0 || client.estado == "Inactivo") ? "opacity-50 text-muted bg-light-subtle" : "";
             const row = `
                 <tr class="${filaDesactivada}">
-                    <td>${item.nombre}</td>
-                    <td>${item.codigo || 'N/A'}</td>
-                    <td>${riegoTexto}</td>
-                    <td>${item.descripcion}</td>
-                    <td>${catTexto}</td>
-                    <td>$${item.precio.toLocaleString('es-AR', { minimumFractionDigits: 2 })}</td>
-                    <td>${item.stock}</td>
+                    <td>${client.nombre}</td>
+                    <td>${client.dni}</td>
+                    <td>${client.razon}</td>
+                    <td>${client.cuit}</td>
+                    <td>${client.telefono}</td>
+                    <td>${client.email}</td>
                     <td>
-                        <a href="item/edit?id=${item.id}" class="btn btn-sm btn-outline-primary" title="Editar">
+                        <a href="client/edit?id=${client.id}" class="btn btn-sm btn-outline-primary" title="Editar">
                             <i class="bi bi-pencil"></i>
                         </a>
                     </td>
@@ -88,47 +91,41 @@ export const view = {
         });
     },
 
-    renderForm: function(item){
-        const idInput = document.getElementById("item-id");
+    renderForm: function(client){
+        const idInput = document.getElementById("client-id");
         if (idInput) {
-            idInput.value = item.id;
+            idInput.value = client.id;
         }
         
-        document.getElementById("nombre-data").value = item.nombre; 
+        document.getElementById("nombre-data").value = client.nombre; 
 
-        const codigoInput = document.getElementById("codigo-data");
-        if (codigoInput) {
-            codigoInput.value = item.codigo || "";
+        const dniInput = document.getElementById("dni-data");
+        if (dniInput) {
+            dniInput.value = client.dni || "";
         }
 
-        document.getElementById("riego-data").value = item.riego;
-
-        document.getElementById("descripcion-data").value = item.descripcion; 
-        const catSelect = document.getElementById("categoria-data");
-        if (catSelect) {
-          catSelect.value = item.categoria; 
-        }
-        document.getElementById("precio-data").value = item.precio; 
-        document.getElementById("stock-data").value = item.stock; 
+        document.getElementById("razon-data").value = client.razon || "";
+        document.getElementById("cuit-data").value = client.cuit || ""; 
+        document.getElementById("telefono-data").value = client.telefono || ""; 
+        document.getElementById("email-data").value = client.email || "";
 
         const fechaData = document.getElementById("fecha-data");
-
         if(fechaData){
-            fechaData.textContent = `Creado el: ${item.fechaAlta}`
+            fechaData.textContent = `Creado el: ${client.fechaAlta}`
         }
 
         const toggle = document.getElementById("estado-toggle");
         const estadoData = document.getElementById("estado-data");
 
         if (toggle && estadoData) {
-            const esActivo = (item.estado == 1 || item.estado == "Activo");
+            const esActivo = (client.estado == 1 || client.estado == "Activo");
             toggle.checked = esActivo;
 
             if (esActivo) {
                 estadoData.textContent = "Activo";
                 estadoData.className = "text-success fw-bold small";
             } else {
-                estadoData.textContent = "Discontinuado";
+                estadoData.textContent = "Inactivo";
                 estadoData.className = "text-danger fw-bold small";
             }
         }
@@ -145,8 +142,8 @@ export const view = {
 
         if(contenedorText){
             contenedorText.innerHTML = meta.total_records > 0 
-                ? `Mostrando <span class="fw-bold">${desde}</span> a <span class="fw-bold">${hasta}</span> de <span class="fw-bold">${meta.total_records}</span> productos`
-                : 'No hay productos para mostrar';
+                ? `Mostrando <span class="fw-bold">${desde}</span> a <span class="fw-bold">${hasta}</span> de <span class="fw-bold">${meta.total_records}</span> usuarios`
+                : 'No hay usuarios para mostrar';
         }
 
         paginadorUl.innerHTML = '';
@@ -179,5 +176,5 @@ export const view = {
             liSiguiente.addEventListener("click", () => cambiarPagina(meta.current_page + 1));
         }
         paginadorUl.appendChild(liSiguiente);
-    }
+    } 
 };

@@ -8,7 +8,10 @@
           </p>
         </div>
         <div class="text-end mb-2">
-          <h5 id="estado-data" class="text-success mb-1"></h5>
+          <div class="d-inline-flex align-items-center gap-2 form-check form-switch fs-6 justify-content-end p-0 mb-1">
+            <input class="form-check-input m-0 custom-switch-style" type="checkbox" name="estado" id="estado-toggle" disabled>
+            <span id="estado-data" class="text-success fw-bold small"></span>
+          </div>
           <p id="fecha-data" class="small text-secondary mb-0"></p>
         </div>
       </div>
@@ -33,7 +36,18 @@
                   disabled
                   required />
               </div>
-
+              <div class="flex-grow-1 mid-input">
+                <label for="codigo-data" class="form-label fw-semibold">Código</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="codigo-data"
+                  name="codigo"
+                  placeholder="Ej: MONS-01"
+                  maxlength="10"
+                  disabled
+                  required />
+              </div>
               <div class="flex-grow-1 mid-input">
                 <label for="riego-data" class="form-label fw-semibold">Riego</label>
                 <select
@@ -49,18 +63,6 @@
                   <option value="2">Medio</option>
                   <option value="3">Alto</option>
                 </select>
-              </div>
-              <div class="flex-grow-1 mid-input">
-                <label for="descripcion-data" class="form-label fw-semibold">Descripción</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="descripcion-data"
-                  name="descripcion"
-                  maxlength="50"
-                  title="Las descripciones tienen un largo máximo de 50 caracteres."
-                  disabled
-                  required />
               </div>
               <div class="flex-grow-1 mid-input">
                 <label class="form-label" for="categoria-data">Categoria</label>
@@ -104,6 +106,19 @@
                   disabled
                   required />
                 <input type="hidden" id="item-id" name="id">
+              </div>
+              <div class="w-100 mt-2">
+                <label for="descripcion-data" class="form-label fw-semibold">Descripción</label>
+                <textarea
+                  class="form-control"
+                  id="descripcion-data"
+                  name="descripcion"
+                  rows="3"
+                  maxlength="255"
+                  placeholder="Escriba los detalles o características de la planta..."
+                  title="Las descripciones tienen un largo máximo de 255 caracteres."
+                  disabled
+                  required></textarea>
               </div>
             </div>
 

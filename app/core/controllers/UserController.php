@@ -64,6 +64,97 @@ class UserController extends BaseController{
     }
 
     public function update(Request $request, Response $response){
+        try {
+            $data = $request->getDataFromInput();
+            $dto = new UserDto($data);
 
+            $service = new UserService();
+            $service->update($dto);
+            $response->setMessage("Se actualizó el usuario con éxito.");
+            $response->send();
+        }
+        catch(\Exception $e){
+            $response->setMessage($e->getMessage());
+            $response->setData([]);
+            $response->send(false);
+        }
+        
+    }
+
+    public function list(Request $request, Response $response){
+        try {
+            $filters = [
+                'page'   => $request->getParameterValue('page', 1),
+                'limit'  => $request->getParameterValue('limit', 10)
+            ];
+
+            $service = new UserService();
+            $usuariosDto = $service->list($filters);
+
+            $recordsArray = [];
+            foreach($usuariosDto['records'] as $dto){
+                    $recordsArray[] = [
+                    'id'        => $dto->getId(),
+                    'nombre'    => $dto->getNombre(),
+                    'cuenta'    => $dto->getCuenta(),
+                    'perfil'    => $dto->getPerfil(),
+                    'correo'    => $dto->getCorreo(),
+                    'estado'    => $dto->getEstado(),
+                    'fechaAlta' => $dto->getFechaAlta(),
+                    'resetPass' => $dto->getResetPass()
+                ];
+            }
+            $response->setData([
+                'records' => $recordsArray,
+                'meta'    => $usuariosDto['meta']
+            ]);
+            $response->send(true);
+        }
+        catch(\Exception $e){
+            $response->setMessage($e->getMessage());
+            $response->setData([]);
+            $response->send(false);
+        }
+    }
+
+    public function load(Request $request, Response $response){
+        try {
+            $id = $request->getId();
+            $service = new UserService();
+            $usuarioDto = $service->load($id);
+            if(!$usuarioDto){
+                throw new \Exception("No se encontró el usuario solicitado");
+            }
+            $response->setData([
+                'id'        => $usuarioDto->getId(),
+                'nombre'    => $usuarioDto->getNombre(),
+                'cuenta'    => $usuarioDto->getCuenta(),
+                'perfil'    => $usuarioDto->getPerfil(),
+                'correo'    => $usuarioDto->getCorreo(),
+                'estado'    => $usuarioDto->getEstado(),
+                'fechaAlta' => $usuarioDto->getFechaAlta(),
+                'resetPass' => $usuarioDto->getResetPass()
+            ]);
+            $response->send(true);
+        }
+        catch(\Exception $e){
+            $response->setMessage($e->getMessage());
+            $response->setData([]);
+            $response->send(false);
+        }
+    }
+
+    public function delete(Request $request, Response $response){
+        try {
+            $id = $request->getId();
+            $service = new UserService();
+            $service->delete($id);
+            $response->setMessage("Se eliminó el usuario con éxito.");
+            $response->send();
+        }
+        catch(\Exception $e){
+            $response->setMessage($e->getMessage());
+            $response->send(false);
+        }
     }
 }

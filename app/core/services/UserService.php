@@ -21,10 +21,13 @@ final class UserService extends BaseService{
     public function list(array $filters = []){
         $listaAnidada = $this->dao->list($filters);
         $listaDTOs = [];
-        forEach($listaAnidada as $usuario){
+        forEach($listaAnidada['records'] as $usuario){
             $listaDTOs[] = new UserDto($usuario);
         }
-        return $listaDTOs;
+        return [
+            'records' => $listaDTOs,
+            'meta'    => $listaAnidada['meta']
+        ];
     }
 
     public function load(int $id): ?UserDto{
@@ -37,12 +40,32 @@ final class UserService extends BaseService{
     }
 
     public function update(UserDto $dto){
+        $usuarioActual = $this->dao->load($dto->getId());
+        
+        if (empty($dto->getContraseña())) {
+            $dto->setContraseña($usuarioActual['contraseña']);
+        } else {
+            $dto->setContraseña($dto->getContraseña());
+        }
         $this->dao->update($dto->toArray());
+    }
+
+    public function updatePassword(UserDto $dto){
+        /** @var UserDao $concreteDao */
+        $concreteDao = $this->dao;
+        $concreteDao->updatePassword([
+            'id'         => $dto->getId(),
+            'contraseña' => $dto->getContraseña() 
+        ]);
     }
 
     public function delete(int $id){
         if($id === 1){
             throw new \Exception("No puede borrarse al administrador principal del sistema");
+        }
+
+        if($id === $_SESSION['usuarioId']){
+            throw new \Exception("No puede borrarse a usted mismo mientras está logueado");
         }
 
         $this->dao->delete($id);

@@ -9,8 +9,10 @@ use app\libs\database\Connection;
 
 final class ItemService extends BaseService{
 
+
     function __construct() {
-        parent::__construct(new ItemDao(Connection::get()));
+        $instanciaDao = new ItemDao(Connection::get());
+        parent::__construct($instanciaDao);
     }
 
     public function save(ItemDto $dto){
@@ -19,6 +21,7 @@ final class ItemService extends BaseService{
     }   
 
     public function update(ItemDto $dto){
+        $this->validate($dto);
         $this->dao->update($dto->toArray());
     }
 
@@ -39,10 +42,31 @@ final class ItemService extends BaseService{
     public function list(array $filters = []){
         $listaAnidada = $this->dao->list($filters);
         $listaDTOs = [];
-        forEach ($listaAnidada as $item){
+        forEach($listaAnidada['records'] as $item){
             $listaDTOs[] = new ItemDto($item);
         }
-        return $listaDTOs;
+        return [
+            'records' => $listaDTOs,
+            'meta'    => $listaAnidada['meta']
+        ];
+    }
+
+    public function suggestive(array $filters): array {
+        if (!isset($filters["valueToSearch"]) || trim($filters["valueToSearch"]) === "") {
+            throw new \Exception("Se requiere el filtro <strong>valueToSearch</strong> para realizar búsquedas <strong>sugestivas</strong>.");
+        }
+        
+        /** @var ItemDao $concreteDao */
+        $concreteDao = $this->dao;
+        
+        $records = $concreteDao->suggestive($filters);
+        $stmt = Connection::get()->query("SELECT FOUND_ROWS()");
+        $foundedRecords = (int)$stmt->fetchColumn();
+        
+        return [
+            "records" => $records,
+            "foundedRecords" => $foundedRecords
+        ];
     }
 
     private function validate(ItemDto $dto): void{

@@ -1,7 +1,7 @@
   <section id="form-cruds" class="d-flex flex-column pb-5">
     <div class="container px-4 px-lg-5">
       <div class="py-2 me-auto mt-3">
-        <h2 class="fw-bold">Gestión de productos</h2>
+        <h2 class="fw-bold">Gestión de Productos</h2>
         <p class="lead">Gestione todos sus productos</p>
       </div>
 
@@ -71,24 +71,12 @@
             </tbody>
           </table>
           <div class="d-flex flex-column flex-md-row justify-content-between align-items-center p-3 border-top bg-light">
-            <div class="small text-secondary mb-2 mb-md-0">
-              Mostrando <span class="fw-bold">1</span> a <span class="fw-bold">10</span> de <span class="fw-bold">100</span>
-              usuarios
+            <div id="txt-mostrando-paginas" class="small text-secondary mb-2 mb-md-0">
+              Cargando páginas...
             </div>
 
             <nav>
-              <ul class="pagination pagination-sm mb-0">
-                <li class="page-item disabled">
-                  <a class="page-link text-success" href="#">Anterior</a>
-                </li>
-                <li class="page-item active">
-                  <a class="page-link bg-success border-success" href="item/index">1</a>
-                </li>
-                <li class="page-item"><a class="page-link text-success" href="#">2</a></li>
-                <li class="page-item"><a class="page-link text-success" href="#">3</a></li>
-                <li class="page-item">
-                  <a class="page-link text-success" href="#">Siguiente</a>
-                </li>
+              <ul id="ul-paginacion" class="pagination pagination-sm mb-0">
               </ul>
             </nav>
           </div>
@@ -100,10 +88,10 @@
             class="btn btn-outline-success btn-sm px-4">
             <i class="bi bi-plus-circle me-2"></i>Nuevo producto
           </a>
-          <btn
+          <button
             class="btn btn-outline-secondary btn-sm btnExportarListado">
             Exportar listado
-          </btn>
+          </button>
         </div>
       </div>
     </div>

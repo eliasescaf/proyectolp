@@ -2,16 +2,12 @@
     <div class="container px-4 px-lg-5 mb-4">
       <div class="pt-5 pb-2 d-flex justify-content-between align-items-end">
         <div>
-          <h2 class="fw-bold">Detalle del usuario</h2>
+          <h2 class="fw-bold">Mis datos</h2>
           <p class="lead">
-            Visualice o modifique la información del integrante
+            Visualice sus datos o modifique su contraseña
           </p>
         </div>
         <div class="text-end mb-2">
-          <div class="d-inline-flex align-items-center gap-2 form-check form-switch fs-6 justify-content-end p-0 mb-1">
-            <input class="form-check-input m-0 custom-switch-style" type="checkbox" name="estado" id="estado-toggle" disabled>
-            <span id="estado-data" class="text-success fw-bold small"></span>
-          </div>
           <p id="fecha-data" class="small text-secondary mb-0"></p>
         </div>
       </div>
@@ -88,42 +84,21 @@
             <div
               class="d-flex flex-wrap justify-content-between align-items-center gap-2">
               <div>
-                <button
-                  type="button"
-                  class="btn btn-outline-danger btnEliminar">
-                  Eliminar
-                </button>
-                <button type="button" class="btn btn-outline-secondary btnPDF">
-                  Exportar PDF
-                </button>
               </div>
-
               <div class="d-flex gap-2">
                 <a
                   href="user/index"
                   class="btn btn-light px-4">Regresar</a>
-
                 <button type="button" class="btn btn-primary px-4 btnEditar">
-                  Editar información
-                </button>
-
-                <button
-                  type="submit"
-                  class="btn btn-success px-4 btnActualizar"
-                  disabled>
-                  Actualizar
-                </button>
-                <button
-                  type="reset"
-                  class="btn btn-secondary px-4 btnCancelar"
-                  disabled>
-                  Cancelar
+                  Editar contraseña
                 </button>
               </div>
             </div>
           </form>
         </div>
       </div>
+      <div id="contenedor-cambio-clave" class="card rounded-3 shadow-sm border-light mt-4 d-none">
+          </div>
     </div>
   </section>
   

@@ -1,6 +1,6 @@
 export const service = {
     load: function(id){
-        return fetch(`item/load?id=${id}`) 
+        return fetch(`client/load?id=${id}`) 
             .then(response => {
                 if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
                 return response.json();
@@ -15,7 +15,7 @@ export const service = {
     },
 
     save: function(item){
-        return fetch("item/save", {
+        return fetch("client/save", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -24,13 +24,13 @@ export const service = {
         })
         .then(response => {return response.json()})
         .catch(error => {
-            console.error("Error al guardar producto");
-            return {success: false, message: "Error al guardar producto"};
+            console.error("Error al guardar cliente");
+            return {success: false, message: "Error al guardar cliente"};
         })
     },
 
     update: function(item){
-        return fetch("item/update", {
+        return fetch("client/update", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -39,25 +39,25 @@ export const service = {
         })
         .then(response => {return response.json()})
         .catch(error => {
-            console.error("Error al actualizar producto");
-            return {success: false, message: "Error al actualizar producto"};
+            console.error("Error al actualizar cliente");
+            return {success: false, message: "Error al actualizar cliente"};
         })
     },
 
     delete: function(id){
-        return fetch(`item/delete?id=${id}`)
+        return fetch(`client/delete?id=${id}`)
         .then(response => {return response.json()})
         .catch(error => {
-            console.error("Error al eliminar producto");
-            return {success: false, message: "Error al eliminar producto"};
+            console.error("Error al eliminar cliente");
+            return {success: false, message: "Error al eliminar cliente"};
         })
     },
 
     list: function(params = { page: 1, limit: 10 }){
-        return fetch(`item/list?page=${params.page}&limit=${params.limit}`)
+        return fetch(`client/list?page=${params.page}&limit=${params.limit}`)
             .then(response => response.json())
             .catch(error => {
-                console.error("Error al cargar producto");
+                console.error("Error al cargar usuario");
             })
     }
 
