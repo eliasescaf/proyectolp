@@ -85,7 +85,9 @@ class UserController extends BaseController{
         try {
             $filters = [
                 'page'   => $request->getParameterValue('page', 1),
-                'limit'  => $request->getParameterValue('limit', 10)
+                'limit'  => $request->getParameterValue('limit', 10),
+                'buscar' => $request->getParameterValue('buscar', ''),
+                'perfil' => $request->getParameterValue('perfil', '')
             ];
 
             $service = new UserService();

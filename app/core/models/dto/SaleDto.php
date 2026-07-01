@@ -7,7 +7,9 @@ use app\core\models\dto\SaleDetailDto;
 final class SaleDto {
     private int $id;
     private int $usuarioId;
+    private int $numeroVenta;
     private ?int $clienteId; 
+    private string $clienteNombre;
     private string $formaPago; 
     private float $total;
     private string $fecha;
@@ -18,7 +20,9 @@ final class SaleDto {
     public function __construct(array $data = []) {
         $this->id            = (int)($data['id'] ?? 0);
         $this->usuarioId     = (int)($data['usuario_id'] ?? 0);
+        $this->numeroVenta   = (int)($data['numero_venta'] ?? 0);
         $this->clienteId     = isset($data['cliente_id']) ? (int)$data['cliente_id'] : null;
+        $this->clienteNombre = $data['cliente_nombre'] ?? '';
         $this->formaPago     = $data['forma_pago'] ?? '';
         $this->total         = (float)($data['total'] ?? 0.0);
         $this->fecha         = $data['fecha'] ?? date("Y-m-d H:i:s");
@@ -44,7 +48,9 @@ final class SaleDto {
     // --- GETTERS ---
     public function getId(): int { return $this->id; }
     public function getUsuarioId(): int { return $this->usuarioId; }
+    public function getNumeroVenta(): int { return $this->numeroVenta; }
     public function getClienteId(): ?int { return $this->clienteId; }
+    public function getClienteNombre(): string { return $this->clienteNombre; }
     public function getFormaPago(): string { return $this->formaPago; }
     public function getTotal(): float { return $this->total; }
     public function getFecha(): string { return $this->fecha; }
@@ -71,9 +77,11 @@ final class SaleDto {
 
         return [
             'id'             => $this->id,
+            'numero_venta' => $this->numeroVenta,
             'usuario_id'     => $this->usuarioId,
             'usuario_nombre' => $this->usuarioNombre,
             'cliente_id'     => $this->clienteId,
+            'cliente_nombre' => $this->clienteNombre,
             'forma_pago'     => $this->formaPago,
             'descuento'  => $this->descuento,
             'total'          => $this->total,

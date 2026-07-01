@@ -4,6 +4,7 @@ namespace app\core\controllers;
 
 use app\core\controllers\base\BaseController;
 use app\core\services\AuthenticationService;
+use app\core\models\dto\UserDto;
 use app\libs\http\Request;
 use app\libs\http\Response;
 
@@ -19,7 +20,6 @@ class AuthenticationController extends BaseController{
         $this->scripts = [
             'app/assets/libs/jspdf.umd.min.js',
             'app/assets/libs/jspdf.plugin.autotable.min.js',
-            'app/js/authentication/login.js'
         ];
         $this->errorLogin = "";
         $this->setCurrentView($request);
@@ -33,10 +33,7 @@ class AuthenticationController extends BaseController{
             $user = $request->getParameterValue('usuario-data', '');
             $pass = $request->getParameterValue('password-data', '');
 
-            if(empty($user) || empty($pass)){
-                throw new \Exception("Debe ingresar un usuario y una contraseña.");
-            }
-            
+            UserDto::validarFormatoLogin($user, $pass);
             $service = new AuthenticationService();
             $service->login($user, $pass);
             
@@ -52,13 +49,18 @@ class AuthenticationController extends BaseController{
     }
 
     public function logout(Request $request, Response $response){
-        $service = new AuthenticationService();
-        $service->logout();
-        $request->setController('authentication');
-        $request->setAction('index');
-        $this->setCurrentView($request);
-        
-        require_once(APP_DIR_TEMPLATE . 'auth_template.php');
+       try {
+            $service = new AuthenticationService();
+            $service->logout();
+            
+            $response->setMessage("Sesión cerrada correctamente.");
+            $response->setData([]);
+            $response->send(true); 
+        } catch (\Exception $e) {
+            $response->setMessage($e->getMessage());
+            $response->setData([]);
+            $response->send(false);
+        }
     }
 
 }

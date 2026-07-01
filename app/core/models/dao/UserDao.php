@@ -113,17 +113,40 @@ final class UserDao extends BaseDao implements InterfaceDao{
         $limit = (int)($filters['limit'] ?? 10);
         $page = (int)($filters['page'] ?? 1);
         $offset = ($page - 1) * $limit;
+        $buscar = $filters['buscar'] ?? '';
+        $perfil = $filters['perfil'] ?? '';
 
-        $sqlCount = "SELECT COUNT(*) as total FROM {$this->table}";
+        $whereClauses = [];
+        $params = [];
+
+        if (!empty($buscar)) {
+            $whereClauses[] = "(nombre LIKE :buscar OR cuenta LIKE :buscar OR correo LIKE :buscar)";
+            $params[':buscar'] = "%$buscar%";
+        }
+        if (!empty($perfil)) {
+            $whereClauses[] = "perfil = :perfil";
+            $params[':perfil'] = $perfil;
+        }
+
+        $whereSql = "";
+        if (count($whereClauses) > 0) {
+            $whereSql = " WHERE " . implode(" AND ", $whereClauses);
+        }
+
+        $sqlCount = "SELECT COUNT(*) as total FROM {$this->table} {$whereSql}";
         $stmtCount = $this->conn->prepare($sqlCount);
-        $stmtCount->execute();
+        $stmtCount->execute($params);
         $totalRecords = (int)$stmtCount->fetch(\PDO::FETCH_ASSOC)['total'];
 
         $sqlData = "SELECT id, nombre, cuenta, perfil, correo, contraseña, fechaAlta, estado, resetPass 
         FROM {$this->table}
+        {$whereSql}
         ORDER BY id DESC
         LIMIT :limit OFFSET :offset";
         $stmtData = $this->conn->prepare($sqlData);
+        foreach ($params as $key => $val) {
+            $stmtData->bindValue($key, $val);
+        }
         $stmtData->bindValue(':limit', $limit, \PDO::PARAM_INT);
         $stmtData->bindValue(':offset', $offset, \PDO::PARAM_INT);
         $stmtData->execute();

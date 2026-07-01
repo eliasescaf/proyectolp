@@ -1,9 +1,9 @@
 document.addEventListener("DOMContentLoaded", () => {
-    const form = document.getElementById("login-form");
-    form?.addEventListener("submit", async(e) => {
+    const formLogin = document.getElementById("login-form");
+    formLogin?.addEventListener("submit", async(e) => {
         e.preventDefault();
-        const formData = new FormData(form);
-        try{
+        const formData = new FormData(formLogin);
+        try {
             const response = await fetch("authentication/login", {
                 method: "POST",
                 body: formData
@@ -21,8 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 }).then(() => {
                     window.location.href = "home/index";
                 });
-            }
-            else{
+            } else {
                 Swal.fire({
                     icon: 'error',
                     title: 'Oops...',
@@ -31,9 +30,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     heightAuto: false
                 });
             }
-        }
-        catch(error){
-            console.error("Error en el fetch:", error);
+        } catch(error) {
+            console.error("Error en el fetch de login:", error);
             Swal.fire({
                 icon: 'error',
                 title: 'Error de conexión',
@@ -41,5 +39,29 @@ document.addEventListener("DOMContentLoaded", () => {
                 heightAuto: false
             });
         }
-    })
-})
+    });
+
+    const btnLogout = document.getElementById("btn-logout");
+    btnLogout?.addEventListener("click", async (e) => {
+        e.preventDefault();
+        try {
+            const response = await fetch("authentication/logout", { method: "POST" });
+            const result = await response.json();
+            if (result.success) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Adiós!',
+                    text: result.message,
+                    showConfirmButton: false,
+                    timer: 1500,
+                    heightAuto: false
+                }).then(() => {
+                    window.location.href = "authentication/index";
+                });
+            }
+        } catch (error) {
+            console.error("Error al cerrar sesión:", error);
+            window.location.href = "authentication/index";
+        }
+    });
+});

@@ -72,9 +72,33 @@ final class ClientService extends BaseService{
             throw new \Exception("El campo <strong>Nombre</strong> es obligatorio.");
         }
 
+        if (strlen(trim($dto->getTelefono())) === 0){
+            throw new \Exception("El campo <strong>Teléfono</strong> es obligatorio.");
+        }
+
+        if (strlen(trim($dto->getEmail())) === 0){
+            throw new \Exception("El campo <strong>Email</strong> es obligatorio.");
+        }
+
         $cuit = trim($dto->getCuit());
-        if (strlen($cuit) > 0 && strlen($cuit) !== 11) {
-            throw new \Exception("El <strong>CUIT</strong> debe contener exactamente 11 dígitos numéricos.");
+        $dni = trim($dto->getDni());
+
+        if ($dto->getTipo() === "Particular"){
+            if (strlen($dni) !== 8) {
+                throw new \Exception("Para clientes de tipo Particular, el <strong>DNI</strong> es obligatorio y debe tener 8 dígitos numéricos.");
+            }
+            if (strlen($cuit) > 0 && (strlen($cuit) !== 11)) {
+                throw new \Exception("El <strong>CUIT</strong> opcional ingresado debe contener exactamente 11 dígitos numéricos.");
+            }
+        }
+
+        if ($dto->getTipo() === "Empresa") {
+            if (strlen($cuit) !== 11) {
+                throw new \Exception("Para clientes de tipo Empresa, el <strong>CUIT</strong> es obligatorio y debe tener 11 dígitos numéricos.");
+            }
+            if (strlen(trim($dto->getRazon())) === 0) {
+                throw new \Exception("Para clientes de tipo Empresa, la <strong>Razón Social</strong> es obligatoria.");
+            }
         }
     }
 }

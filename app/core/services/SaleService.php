@@ -9,26 +9,29 @@ use app\core\services\base\BaseService;
 use app\libs\database\Connection;
 
 final class SaleService extends BaseService {
-    private \PDO $db;
+    private \PDO $conn;
     private SaleDetailDao $detailDao;
 
     public function __construct() {
-        $this->db = Connection::get();
-        $this->detailDao = new SaleDetailDao($this->db);
-        parent::__construct(new SaleDao($this->db));
+        $this->conn = Connection::get();
+        $this->detailDao = new SaleDetailDao($this->conn);
+        parent::__construct(new SaleDao($this->conn));
     }
 
     public function save(SaleDto $dto): void {
+        if(!($this->dao instanceof SaleDao)){
+            throw new \Exception("El DAO no es una instancia de SaleDao");
+        }
+
         $this->validate($dto);
-        /** @var \app\core\models\dao\SaleDao $concreteDao */
         $concreteDao = $this->dao;
-        $this->db->beginTransaction();
+        $this->conn->beginTransaction();
 
         try{
             $concreteDao->save($dto->toArrayForSave());
             $saleId = $concreteDao->getLastInsertedId();
-            $stmtCheckStock = $this->db->prepare("SELECT stock, nombre FROM items WHERE id = :id FOR UPDATE");
-            $stmtUpdateStock = $this->db->prepare("UPDATE items SET stock = stock - :cantidad WHERE id = :id");
+            $stmtCheckStock = $this->conn->prepare("SELECT stock, nombre FROM items WHERE id = :id FOR UPDATE");
+            $stmtUpdateStock = $this->conn->prepare("UPDATE items SET stock = stock - :cantidad WHERE id = :id");
             
             foreach($dto->getDetalles() as $detail){
                 $detail->setVentaId($saleId);
@@ -50,11 +53,11 @@ final class SaleService extends BaseService {
 
                 $this->detailDao->save($detail->toArrayForSave());
             }
-            $this->db->commit();
+            $this->conn->commit();
 
         }
         catch(\Exception $e){
-            $this->db->rollBack();
+            $this->conn->rollBack();
             throw $e;
         }
     }   

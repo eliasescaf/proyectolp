@@ -43,9 +43,6 @@
                   name="perfil"
                   id="perfil-data"
                   required>
-                  <option value="" disabled selected>
-                    Seleccione un perfil...
-                  </option>
                   <option value="1">Operador</option>
                   <option value="2">Administrador</option>
                 </select>

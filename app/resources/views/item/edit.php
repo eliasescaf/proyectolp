@@ -43,7 +43,6 @@
                   class="form-control"
                   id="codigo-data"
                   name="codigo"
-                  placeholder="Ej: MONS-01"
                   maxlength="10"
                   disabled
                   required />
@@ -115,7 +114,6 @@
                   name="descripcion"
                   rows="3"
                   maxlength="255"
-                  placeholder="Escriba los detalles o características de la planta..."
                   title="Las descripciones tienen un largo máximo de 255 caracteres."
                   disabled
                   required></textarea>
@@ -124,12 +122,10 @@
 
             <hr class="my-4 text-secondary opacity-25" />
 
-            <div
-              class="d-flex flex-wrap justify-content-between align-items-center gap-2">
-              <div>
-                <button
-                  type="button"
-                  class="btn btn-outline-danger btnEliminar">
+            <div class="row g-3 align-items-center">
+              
+              <div class="col-12 col-md-4 d-flex gap-2 justify-content-start">
+                <button type="button" class="btn btn-outline-danger btnEliminar">
                   Eliminar
                 </button>
                 <button type="button" class="btn btn-outline-secondary btnPDF">
@@ -137,28 +133,22 @@
                 </button>
               </div>
 
-              <div class="d-flex gap-2">
-                <a
-                  href="item/index"
-                  class="btn btn-light px-4">Regresar</a>
-
-                <button type="button" class="btn btn-primary px-4 btnEditar">
+              <div class="col-12 col-md-8 d-flex flex-wrap gap-2 justify-content-start justify-content-md-end">
+                <a href="item/index" class="btn btn-light px-3">Regresar</a>
+                
+                <button type="button" class="btn btn-primary px-3 btnEditar">
                   Editar información
                 </button>
-
-                <button
-                  type="submit"
-                  class="btn btn-success px-4 btnActualizar"
-                  disabled>
+                
+                <button type="submit" class="btn btn-success px-3 btnActualizar" disabled>
                   Actualizar
                 </button>
-                <button
-                  type="reset"
-                  class="btn btn-secondary px-4 btnCancelar"
-                  disabled>
+                
+                <button type="reset" class="btn btn-secondary px-3 btnCancelar" disabled>
                   Cancelar
                 </button>
               </div>
+
             </div>
           </form>
         </div>

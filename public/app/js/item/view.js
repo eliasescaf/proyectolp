@@ -63,7 +63,17 @@ export const view = {
         const tbody = document.getElementById("item-table-body");
         if (!tbody) return;
         tbody.innerHTML = "";
-
+        
+        if (items.length === 0) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="8" class="text-center text-muted py-3 small">
+                        No se encontraron productos registrados
+                    </td>
+                </tr>`;
+            return;
+        }
+        
         items.forEach(item => {
             const filaDesactivada = (item.estado == 0 || item.estado == "Discontinuado") ? "opacity-50 text-muted bg-light-subtle" : "";
             const riegoTexto = item.riego == "1" ? "Bajo" : (item.riego == "2" ? "Medio" : "Alto");
@@ -73,7 +83,7 @@ export const view = {
                     <td>${item.nombre}</td>
                     <td>${item.codigo || 'N/A'}</td>
                     <td>${riegoTexto}</td>
-                    <td>${item.descripcion}</td>
+                    <td class="col-acortada" title="${item.descripcion}">${item.descripcion}</td>
                     <td>${catTexto}</td>
                     <td>$${item.precio.toLocaleString('es-AR', { minimumFractionDigits: 2 })}</td>
                     <td>${item.stock}</td>
@@ -146,7 +156,7 @@ export const view = {
         if(contenedorText){
             contenedorText.innerHTML = meta.total_records > 0 
                 ? `Mostrando <span class="fw-bold">${desde}</span> a <span class="fw-bold">${hasta}</span> de <span class="fw-bold">${meta.total_records}</span> productos`
-                : 'No hay productos para mostrar';
+                : '';
         }
 
         paginadorUl.innerHTML = '';

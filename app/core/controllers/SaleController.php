@@ -80,12 +80,32 @@ class SaleController extends BaseController {
     public function edit(Request $request, Response $response) {}
 
     public function update(Request $request, Response $response) {}
-    public function delete(Request $request, Response $response) {}
+    public function delete(Request $request, Response $response) {
+        try {
+            $id = $request->getId();
+            if (!$id) {
+                throw new \Exception("ID de venta inválido");
+            }
+            $service = new SaleService();
+            $service->delete((int)$id);
+            $response->setMessage("La venta fue eliminada y el stock actualizado.");
+            $response->setData([]);
+            $response->send(true);
+        }
+        catch(\Exception $e){
+            $response->setMessage($e->getMessage());
+            $response->setData([]);
+            $response->send(false);
+        }
+    }
     public function list(Request $request, Response $response) {
         try{
             $filters = [
                 'page'   => $request->getParameterValue('page', 1),
-                'limit'  => $request->getParameterValue('limit', 10)
+                'limit'  => $request->getParameterValue('limit', 10),
+                'buscar'       => $request->getParameterValue('buscar', ''),
+                'fecha_inicio' => $request->getParameterValue('fecha_inicio', ''),
+                'fecha_fin'    => $request->getParameterValue('fecha_fin', '')
             ];
 
             $service = new SaleService();

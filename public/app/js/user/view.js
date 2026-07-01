@@ -66,6 +66,16 @@ export const view = {
     if (!tbody) return;
     tbody.innerHTML = "";
 
+    if (users.length === 0) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="6" class="text-center text-muted py-3 small bg-light">
+                        No se encontraron usuarios registrados
+                    </td>
+                </tr>`;
+            return;
+        }
+
     users.forEach((user) => {
       const filaDesactivada =
         user.estado == 0 || user.estado == "Inactivo"
@@ -144,7 +154,7 @@ export const view = {
         if(contenedorText){
             contenedorText.innerHTML = meta.total_records > 0 
                 ? `Mostrando <span class="fw-bold">${desde}</span> a <span class="fw-bold">${hasta}</span> de <span class="fw-bold">${meta.total_records}</span> usuarios`
-                : 'No hay usuarios para mostrar';
+                : '';
         }
 
         paginadorUl.innerHTML = '';

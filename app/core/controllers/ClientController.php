@@ -108,11 +108,13 @@ class ClientController extends BaseController{
         try {
             $filters = [
                 'page'   => $request->getParameterValue('page', 1),
-                'limit'  => $request->getParameterValue('limit', 10)
+                'limit'  => $request->getParameterValue('limit', 10),
+                'tipo'   => $request->getParameterValue('tipo', ''),
+                'buscar' => $request->getParameterValue('buscar', '')
             ];
             
             $service = new ClientService();
-            $clientsDto = $service->list();
+            $clientsDto = $service->list($filters);
 
             $recordsArray = [];
             foreach($clientsDto['records'] as $dto){

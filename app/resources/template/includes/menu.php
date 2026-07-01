@@ -34,7 +34,7 @@
           <ul class="dropdown-menu dropdown-menu-end">
             <li><a class="dropdown-item" href="account/index">Mis datos</a></li>
             <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item text-danger" href="authentication/index">Cerrar sesión</a></li>
+            <li><a id="btn-logout" class="dropdown-item text-danger" href="#">Cerrar sesión</a></li>
           </ul>
         </li>
       </ul>

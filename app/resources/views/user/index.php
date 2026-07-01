@@ -16,33 +16,30 @@
       <div class="collapse mb-3" id="collapseFiltros">
         <div class="card card-body shadow-sm border-light">
           <div class="row g-3">
-            <div class="col-md-4">
+            <div class="col-md-5">
               <label class="form-label small fw-bold">Buscar</label>
               <div class="input-group">
                 <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
-                <input type="text" class="form-control" placeholder="Nombre, cuenta o correo...">
+                <input type="text" id="filtro-buscar-usuario" class="form-control" placeholder="Nombre, cuenta o correo...">
               </div>
             </div>
 
-            <div class="col-md-3">
+            <div class="col-md-4">
               <label class="form-label small fw-bold">Perfil</label>
-              <select class="form-select">
-                <option selected>Todos</option>
+              <select id="filtro-perfil-usuario" class="form-select">
+                <option value="">Todos los perfiles</option>
                 <option value="1">Operador</option>
                 <option value="2">Administrador</option>
               </select>
             </div>
 
-            <div class="col-md-3">
-              <label class="form-label small fw-bold">Ordenar por</label>
-              <select class="form-select">
-                <option value="nombre">Nombre (A-Z)</option>
-                <option value="cuenta">Nombre (Z-A)</option>
-              </select>
-            </div>
-
-            <div class="col-md-2 d-flex align-items-end">
-              <button class="btn btn-primary w-100">Aplicar</button>
+            <div class="col-md-3 d-flex align-items-end gap-2">
+              <button type="button" id="btn-filtrar-usuarios" class="btn btn-primary w-50">
+                Aplicar
+              </button>
+              <button type="button" id="btn-limpiar-usuarios" class="btn btn-outline-secondary w-50">
+                <i class="bi bi-arrow-clockwise me-1"></i>
+              </button>
             </div>
           </div>
         </div>

@@ -14,7 +14,7 @@
             autocomplete="off">
             <div class="d-flex flex-wrap gap-3">
               
-              <div class="flex-grow-1 mid-input">
+              <div class="flex-grow-1 full-input">
                 <label for="nombre-data" class="form-label fw-semibold">Nombre</label>
                 <input
                   type="text"
@@ -25,6 +25,14 @@
                   title="El nombre puede contener letras, números, puntos y espacios."
                   
                   required />
+              </div>
+              
+              <div class="flex-grow-1 mid-input">
+                <label for="tipo-data" class="form-label fw-semibold">Tipo</label>
+                <select class="form-select" id="tipo-data" name="tipo" required>
+                  <option value="Particular">Particular</option>
+                  <option value="Empresa">Empresa</option>
+                </select>
               </div>
 
               <div class="flex-grow-1 mid-input">

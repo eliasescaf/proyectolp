@@ -12,7 +12,7 @@ final class ClientDao extends BaseDao implements InterfaceDao {
     }
 
     public function load(int $id): array {
-        $sql = "SELECT id, nombre, dni, telefono, email, razon_social AS razon, cuit_cuil AS cuit, estado, fecha_alta AS fechaAlta
+        $sql = "SELECT id, nombre, tipo, dni, telefono, email, razon_social AS razon, cuit_cuil AS cuit, estado, fecha_alta AS fechaAlta
         FROM {$this->table}
         WHERE id = :id
         LIMIT 1";
@@ -23,13 +23,14 @@ final class ClientDao extends BaseDao implements InterfaceDao {
     }
 
     public function save(array $data): void {
-        $sql = "INSERT INTO {$this->table} (nombre, dni, telefono, email, razon_social, cuit_cuil, fecha_alta) 
-                VALUES (:nombre, :dni, :telefono, :email, :razon, :cuit, NOW())";
+        $sql = "INSERT INTO {$this->table} (nombre, tipo, dni, telefono, email, razon_social, cuit_cuil, fecha_alta) 
+                VALUES (:nombre, :tipo, :dni, :telefono, :email, :razon, :cuit, NOW())";
                 
         $stmt = $this->conn->prepare($sql);
         
         $stmt->execute([
             ':nombre'    => $data['nombre'],
+            ':tipo'      => $data['tipo'],
             ':dni'       => $data['dni'],
             ':telefono'  => $data['telefono'],
             ':email'     => $data['email'],
@@ -41,6 +42,7 @@ final class ClientDao extends BaseDao implements InterfaceDao {
     public function update(array $data): void {
         $sql = "UPDATE {$this->table}
                 SET nombre = :nombre,
+                    tipo = :tipo,
                     dni = :dni,
                     telefono = :telefono,
                     email = :email,
@@ -52,6 +54,7 @@ final class ClientDao extends BaseDao implements InterfaceDao {
         $stmt = $this->conn->prepare($sql);
         $stmt->execute([
             ':nombre'    => $data['nombre'],
+            ':tipo'      => $data['tipo'],
             ':dni'       => $data['dni'],
             ':telefono'  => $data['telefono'],
             ':email'     => $data['email'],
@@ -83,16 +86,41 @@ final class ClientDao extends BaseDao implements InterfaceDao {
         $page = (int)($filters['page'] ?? 1);
         $offset = ($page - 1) * $limit;
 
-        $sqlCount = "SELECT COUNT(*) as total FROM {$this->table}";
+        $tipo = $filters['tipo'] ?? '';
+        $buscar = $filters['buscar'] ?? '';
+
+        $whereClauses = [];
+        $params = [];
+        
+        if (!empty($tipo)) {
+            $whereClauses[] = "tipo = :tipo";
+            $params[':tipo'] = $tipo;
+        }
+
+        if (!empty($buscar)) {
+            $whereClauses[] = "(nombre LIKE :buscar OR razon_social LIKE :buscar OR dni LIKE :buscar OR cuit_cuil LIKE :buscar)";
+            $params[':buscar'] = "%$buscar%";
+        }
+
+        $whereSql = "";
+        if (count($whereClauses) > 0) {
+            $whereSql = " WHERE " . implode(" AND ", $whereClauses);
+        }
+
+        $sqlCount = "SELECT COUNT(*) as total FROM {$this->table} {$whereSql}";
         $stmtCount = $this->conn->prepare($sqlCount);
-        $stmtCount->execute();
+        $stmtCount->execute($params);
         $totalRecords = (int)$stmtCount->fetch(\PDO::FETCH_ASSOC)['total'];
 
-        $sqlData = "SELECT id, nombre, dni, telefono, email, razon_social AS razon, cuit_cuil AS cuit, estado, fecha_alta AS fechaAlta 
+        $sqlData = "SELECT id, tipo, nombre, dni, telefono, email, razon_social AS razon, cuit_cuil AS cuit, estado, fecha_alta AS fechaAlta 
                 FROM {$this->table}
+                {$whereSql}
                 ORDER BY id DESC
                 LIMIT :limit OFFSET :offset";
         $stmtData = $this->conn->prepare($sqlData);
+        foreach ($params as $key => $val) {
+            $stmtData->bindValue($key, $val);
+        }
         $stmtData->bindValue(':limit', $limit, \PDO::PARAM_INT);
         $stmtData->bindValue(':offset', $offset, \PDO::PARAM_INT);
         $stmtData->execute();

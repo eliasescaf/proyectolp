@@ -118,3 +118,29 @@ img {
     box-shadow: none;
     border-color: rgba(0, 0, 0, 0.25); 
 }
+
+.desc-sugestivo{
+  font-size: 0.8rem;
+}
+
+.titulo-sugestivo{
+  font-size: 0.95rem;
+}
+
+.col-acortada{
+  max-width: 200px; 
+  white-space: nowrap; 
+  overflow: hidden; 
+  text-overflow: ellipsis;
+}
+
+.carrito-detalle{
+  position: sticky; 
+  top: 0; 
+  z-index: 1;
+}
+
+.carrito-render{
+  width: 70px; 
+  margin: 0 auto;
+}

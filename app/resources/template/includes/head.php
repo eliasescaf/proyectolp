@@ -5,5 +5,6 @@
 <link rel="stylesheet" href="app/assets/libs/bootstrap/css/bootstrap.min.css" />
 <script defer src="app/assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
 <script defer src="app/assets/libs/sweetalert2.all.min.js"></script>
+<script defer src="app/js/authentication/login.js"></script>
 <link rel="stylesheet" href="app/assets/libs/bootstrap/css/bootstrap-icons.css" />
 <link rel="stylesheet" href="app/css/main.css" />

@@ -16,38 +16,36 @@
       <div class="collapse mb-3" id="collapseFiltros">
         <div class="card card-body shadow-sm border-light">
           <div class="row g-3">
-            <div class="col-md-4">
+
+            <div class="col-md-5">
               <label class="form-label small fw-bold">Buscar</label>
               <div class="input-group">
                 <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
-                <input type="text" class="form-control" placeholder="Nombre, DNI o CUIT...">
+                <input type="text" class="form-control" placeholder="Nombre, DNI o CUIT..." id="filtro-buscar">
               </div>
             </div>
 
-            <div class="col-md-3">
-              <label class="form-label small fw-bold">Estado</label>
-              <select class="form-select">
-                <option selected>Todos</option>
-                <option value="1">Activo</option>
-                <option value="2">Inactivo</option>
+            <div class="col-md-4">
+              <label class="form-label small fw-bold">Tipo de cliente</label>
+              <select id="filtro-tipo-cliente" class="form-select">
+                <option value="">Todos los tipos</option>
+                <option value="Particular">Particulares</option>
+                <option value="Empresa">Empresas</option>
               </select>
             </div>
 
-            <div class="col-md-3">
-              <label class="form-label small fw-bold">Ordenar por</label>
-              <select class="form-select">
-                <option value="nombre-desc">Nombre (A-Z)</option>
-                <option value="nombre-asc">Nombre (Z-A)</option>
-              </select>
+            <div class="col-md-3 d-flex align-items-end gap-2">
+              <button type="button" id="btn-filtrar-clientes" class="btn btn-primary w-50">
+                 Aplicar
+              </button>
+              <button type="button" id="btn-limpiar-clientes" class="btn btn-outline-secondary w-50" title="Limpiar filtros">
+                <i class="bi bi-arrow-clockwise me-1"></i>
+              </button>
             </div>
 
-            <div class="col-md-2 d-flex align-items-end">
-              <button class="btn btn-primary w-100">Aplicar</button>
-            </div>
           </div>
         </div>
       </div>
-
       <div class="card rounded-3 overflow-hidden shadow-sm border-light">
         <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
           <h5 class="mb-0 fw-bold">Lista de clientes</h5>

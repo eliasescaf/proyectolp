@@ -2,7 +2,10 @@ import { view } from "./view.js";
 import { service } from "./service.js";
 
 let paginaActual = 1;
-
+let filtrosActuales = {
+    buscar: "",
+    perfil: ""
+};
 
 export const controller = {
     init: function(){
@@ -76,6 +79,26 @@ export const controller = {
             }
         });
         }
+
+        document.getElementById("btn-filtrar-usuarios")?.addEventListener("click", () => {
+            filtrosActuales.buscar = document.getElementById("filtro-buscar-usuario").value.trim();
+            filtrosActuales.perfil = document.getElementById("filtro-perfil-usuario").value;
+            paginaActual = 1;
+            this.list();
+        });
+
+        document.getElementById("btn-limpiar-usuarios")?.addEventListener("click", () => {
+            filtrosActuales.buscar = "";
+            filtrosActuales.perfil = "";
+            paginaActual = 1;
+
+            const inputBuscar = document.getElementById("filtro-buscar-usuario");
+            const selectPerfil = document.getElementById("filtro-perfil-usuario");
+            if (inputBuscar) inputBuscar.value = "";
+            if (selectPerfil) selectPerfil.value = "";
+
+            this.list();
+        });
         
     },
 
@@ -155,8 +178,14 @@ export const controller = {
     },
 
     list: function(){
-        service.list({ page: paginaActual, limit: 10 }).then(res => {
-            
+        const parametros = {
+            page: paginaActual,
+            limit: 10,
+            buscar: filtrosActuales.buscar,
+            perfil: filtrosActuales.perfil
+        }
+
+        service.list(parametros).then(res => { 
             if (res.success && res.data) {
                 view.renderTable(res.data.records);
                 view.renderPaginador(res.data.meta, (nroPaginaSeleccionada) => {

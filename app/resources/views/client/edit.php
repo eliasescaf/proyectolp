@@ -25,7 +25,7 @@
             autocomplete="off">
             <div class="d-flex flex-wrap gap-3">
               
-              <div class="flex-grow-1 mid-input">
+              <div class="flex-grow-1 full-input">
                 <label for="nombre-data" class="form-label fw-semibold">Nombre</label>
                 <input
                   type="text"
@@ -39,6 +39,14 @@
               </div>
 
               <div class="flex-grow-1 mid-input">
+                <label for="tipo-data" class="form-label fw-semibold">Tipo</label>
+                <select class="form-select" id="tipo-data" name="tipo" disabled required>
+                  <option value="Particular">Particular</option>
+                  <option value="Empresa">Empresa</option>
+                </select>
+              </div>
+
+              <div class="flex-grow-1 mid-input">
                 <label for="dni-data" class="form-label fw-semibold">DNI</label>
                 <input
                   type="text"
@@ -46,7 +54,6 @@
                   id="dni-data"
                   name="dni"
                   inputmode="numeric"
-                  placeholder="Ej: 12345678"
                   pattern="^[0-9]{7,9}$"
                   maxlength="9"
                   minlength="7"
@@ -60,7 +67,6 @@
                   class="form-control"
                   id="razon-data"
                   name="razon"
-                  placeholder="Ej: Vivero San Cayetano"
                   maxlength="150"
                   disabled />
               </div>
@@ -73,7 +79,6 @@
                   id="cuit-data"
                   name="cuit"
                   inputmode="numeric"
-                  placeholder="Ej: 20123456789"
                   pattern="^[0-9]{11}$"
                   maxlength="11"
                   title="El CUIT debe contener 11 dígitos numéricos seguidos, sin guiones."
@@ -89,7 +94,6 @@
                   name="telefono"
                   inputmode="numeric"
                   pattern="^[0-9 ]{7,20}$"
-                  placeholder="Ej: 2974123456"
                   title="El teléfono debe ser un número válido."
                   disabled />
                 
@@ -103,7 +107,6 @@
                   class="form-control"
                   id="email-data"
                   name="email"
-                  placeholder="Ej: cliente@correo.com"
                   maxlength="100"
                   disabled />
               </div>

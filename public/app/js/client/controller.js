@@ -2,6 +2,10 @@ import { view } from "./view.js";
 import { service } from "./service.js";
 
 let paginaActual = 1;
+let filtrosActuales = {
+    tipo: '',
+    buscar: ''
+}
 
 export const controller = {
   init: function () {
@@ -57,8 +61,8 @@ export const controller = {
 
           li.innerHTML = `
                           <div class="py-0">
-                              <span class="text-dark fw-medium d-block mb-0" style="font-size: 0.95rem;">${cliente.nombre}</span>
-                              <span class="text-muted" style="font-size: 0.8rem;">DNI/CUIT: ${cliente.documento || cliente.dni}</span>
+                              <span class="text-dark fw-medium d-block mb-0 titulo-sugestivo">${cliente.nombre}</span>
+                              <span class="text-muted desc-sugestivo">DNI/CUIT: ${cliente.documento || cliente.dni}</span>
                           </div>
                       `;
 
@@ -142,6 +146,7 @@ export const controller = {
         this.exportListToPDF();
       });
     }
+    
 
     const toggle = document.getElementById("estado-toggle");
     const estadoData = document.getElementById("estado-data");
@@ -157,6 +162,26 @@ export const controller = {
         }
       });
     }
+
+    document.getElementById("btn-filtrar-clientes")?.addEventListener("click", () => {
+            filtrosActuales.buscar = document.getElementById("filtro-buscar").value.trim();
+            filtrosActuales.tipo = document.getElementById("filtro-tipo-cliente").value;
+            paginaActual = 1;
+            this.list();
+        });
+
+    document.getElementById("btn-limpiar-clientes")?.addEventListener("click", () => {
+            filtrosActuales.tipo = "";
+            filtrosActuales.buscar = "";
+            paginaActual = 1;
+
+            const inputBuscar = document.getElementById("filtro-buscar");
+            const selectTipo = document.getElementById("filtro-tipo-cliente");
+            
+            if (inputBuscar) inputBuscar.value = "";
+            if (selectTipo) selectTipo.value = "";
+            this.list();
+        });
   },
 
   load: function (id) {
@@ -229,8 +254,15 @@ export const controller = {
   },
 
   list: function () {
+    const parametros = {
+            page: paginaActual,
+            limit: 10,
+            buscar: filtrosActuales.buscar,
+            tipo: filtrosActuales.tipo
+        }
+
     service
-      .list({ page: paginaActual, limit: 10 })
+      .list(parametros)
       .then((res) => {
         if (res.success && res.data) {
           view.renderTable(res.data.records);
@@ -262,12 +294,13 @@ export const controller = {
     doc.setFontSize(12);
     doc.text(`Nombre: ${data.nombre}`, 14, 32);
     doc.text(`DNI: ${data.dni || "N/A"}`, 14, 40);
-    doc.text(`Razón Social: ${data.razon || "N/A"}`, 14, 50);
-    doc.text(`CUIT/CUIL: ${data.cuit || "N/A"}`, 14, 60);
-    doc.text(`Teléfono: ${data.telefono || "N/A"}`, 14, 70);
-    doc.text(`Email: ${data.email || "N/A"}`, 14, 80);
-    doc.text(estado, 14, 90);
-    doc.text(fecha, 14, 100);
+    doc.text(`Tipo: ${data.tipo || "N/A"}`, 14, 50);
+    doc.text(`Razón Social: ${data.razon || "N/A"}`, 14, 60);
+    doc.text(`CUIT/CUIL: ${data.cuit || "N/A"}`, 14, 70);
+    doc.text(`Teléfono: ${data.telefono || "N/A"}`, 14, 80);
+    doc.text(`Email: ${data.email || "N/A"}`, 14, 90);
+    doc.text(estado, 14, 100);
+    doc.text(fecha, 14, 110);
 
     doc.save(`cliente_${data.nombre}.pdf`);
   },

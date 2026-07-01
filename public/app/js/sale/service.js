@@ -29,12 +29,18 @@ export const service = {
         })
     },
 
-    list: function(params = { page: 1, limit: 10 }) {
-        return fetch(`sale/list?page=${params.page}&limit=${params.limit}`)
+    list: function(params) {
+        const query = new URLSearchParams(params).toString();
+        return fetch(`sale/list?${query}`)
             .then(response => response.json())
             .catch(error => {
                 console.error("Error al cargar venta");
             })
+    },
+
+    delete: function(id) {
+        return fetch(`sale/delete?id=${id}`) 
+            .then(res => res.json());
     },
 
     getProductSuggestions: function(cadena){

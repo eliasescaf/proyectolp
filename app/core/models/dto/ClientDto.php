@@ -2,12 +2,15 @@
 
 namespace app\core\models\dto;
 
+use app\core\models\enums\TipoCliente;
+
 final class ClientDto {
-    private string $nombre, $dni, $telefono, $email, $razon, $cuit, $fechaAlta;
+    private string $nombre, $tipo, $dni, $telefono, $email, $razon, $cuit, $fechaAlta;
     private int $id, $estado;
 
     public function __construct(array $data = []) {
         $this->setId($data['id'] ?? 0);
+        $this->setTipo($data['tipo'] ?? "Particular");
         $this->setNombre($data['nombre'] ?? "");
         $this->setDni($data['dni'] ?? "");
         $this->setTelefono($data['telefono'] ?? "");
@@ -25,6 +28,7 @@ final class ClientDto {
 
     /** GETTERS */
     public function getId(): int { return $this->id; }
+    public function getTipo(): string { return $this->tipo; }
     public function getNombre(): string { return $this->nombre; }
     public function getDni(): string { return $this->dni; }
     public function getTelefono(): string { return $this->telefono; }
@@ -42,6 +46,11 @@ final class ClientDto {
     public function setNombre(string $nombre): void {
         $nombreTrimeado = trim($nombre);
         $this->nombre = (strlen($nombreTrimeado) > 0 && strlen($nombreTrimeado) <= 100) ? $nombreTrimeado : "";
+    }
+
+    public function setTipo(string $tipo): void {
+        $categoriaValida = array_column(TipoCliente::cases(), 'value');
+        $this->tipo = in_array($tipo, $categoriaValida) ? $tipo : TipoCliente::PARTICULAR->value;
     }
 
     public function setDni(string $dni): void {
@@ -80,6 +89,7 @@ final class ClientDto {
     public function toArray(): array {
         return [
             'id'         => $this->getId(),
+            'tipo'       => $this->getTipo(),
             'nombre'     => $this->getNombre(),
             'dni'        => $this->getDni(),
             'telefono'   => $this->getTelefono(),
@@ -94,6 +104,7 @@ final class ClientDto {
     public function toArrayForSave(): array {
         return [
             'nombre'     => $this->getNombre(),
+            'tipo'       => $this->getTipo(),
             'dni'        => $this->getDni(),
             'telefono'   => $this->getTelefono(),
             'email'      => $this->getEmail(),

@@ -2,6 +2,10 @@ import { view } from "./view.js";
 import { service } from "./service.js";
 
 let paginaActual = 1;
+let filtrosActuales = {
+    buscar: "",
+    categoria: ""
+}
 
 export const controller = {
   init: function () {
@@ -173,6 +177,26 @@ export const controller = {
         }
       });
     }
+
+      document.getElementById("btn-filtrar-productos")?.addEventListener("click", () => {
+      filtrosActuales.buscar = document.getElementById("filtro-buscar-producto").value.trim();
+      filtrosActuales.categoria = document.getElementById("filtro-categoria-producto").value;
+      paginaActual = 1;
+      this.list(); 
+    });
+
+      document.getElementById("btn-limpiar-productos")?.addEventListener("click", () => {
+      filtrosActuales.buscar = "";
+      filtrosActuales.categoria = "";
+      paginaActual = 1;
+
+      const inputBuscar = document.getElementById("filtro-buscar-producto");
+      const selectCat = document.getElementById("filtro-categoria-producto");
+      if (inputBuscar) inputBuscar.value = "";
+      if (selectCat) selectCat.value = "";
+
+      this.list();
+    });
   },
 
   load: function (id) {
@@ -245,8 +269,14 @@ export const controller = {
   },
 
   list: function () {
+    const parametros = {
+      page: paginaActual,
+      limit: 10,
+      buscar: filtrosActuales.buscar,
+      categoria: filtrosActuales.categoria
+    }
     service
-      .list({ page: paginaActual, limit: 10 })
+      .list(parametros)
       .then((res) => {
         if (res.success && res.data) {
           view.renderTable(res.data.records);

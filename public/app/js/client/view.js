@@ -70,11 +70,23 @@ export const view = {
         if (!tbody) return;
         tbody.innerHTML = "";
 
-        clients.forEach(client => {
+        const listaClientes = clients || [];
+
+        if (listaClientes.length === 0) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="7" class="text-center text-muted py-3 small bg-light">
+                        No se encontraron clientes registrados
+                    </td>
+                </tr>`;
+            return;
+        }
+
+        listaClientes.forEach(client => {
             const filaDesactivada = (client.estado == 0 || client.estado == "Inactivo") ? "opacity-50 text-muted bg-light-subtle" : "";
             const row = `
                 <tr class="${filaDesactivada}">
-                    <td>${client.nombre}</td>
+                    <td>${client.nombre} ${client.apellido || ''}</td>
                     <td>${client.dni}</td>
                     <td>${client.razon}</td>
                     <td>${client.cuit}</td>
@@ -97,7 +109,8 @@ export const view = {
             idInput.value = client.id;
         }
         
-        document.getElementById("nombre-data").value = client.nombre; 
+        document.getElementById("nombre-data").value = client.nombre;
+        document.getElementById("tipo-data").value = client.tipo; 
 
         const dniInput = document.getElementById("dni-data");
         if (dniInput) {
@@ -137,16 +150,19 @@ export const view = {
 
         if(!paginadorUl) return;
 
+        paginadorUl.innerHTML = '';
+
+        if (!meta || meta.total_records === 0) {
+            if(contenedorText) contenedorText.innerHTML = '';
+            return;
+        }
+
         const desde = (meta.current_page - 1) * meta.limit + 1;
         const hasta = Math.min(meta.current_page * meta.limit, meta.total_records);
 
         if(contenedorText){
-            contenedorText.innerHTML = meta.total_records > 0 
-                ? `Mostrando <span class="fw-bold">${desde}</span> a <span class="fw-bold">${hasta}</span> de <span class="fw-bold">${meta.total_records}</span> usuarios`
-                : 'No hay usuarios para mostrar';
+            contenedorText.innerHTML = `Mostrando <span class="fw-bold">${desde}</span> a <span class="fw-bold">${hasta}</span> de <span class="fw-bold">${meta.total_records}</span> clientes`;
         }
-
-        paginadorUl.innerHTML = '';
 
         if(meta.total_pages <= 1) return;
         const liAnterior = document.createElement('li');

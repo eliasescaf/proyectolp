@@ -5,217 +5,260 @@ let carrito = [];
 let totalGeneral = 0.0;
 let montoDescuento = 0.0;
 let paginaActual = 1;
-
+let filtrosActuales = {
+    buscar: "",
+    fecha_inicio: "",
+    fecha_fin: ""
+};
 
 export const controller = {
-    init: function(){
-        this.cargarHistorial();
+    init: function() {
+        this.list();
+        this.bindEventsHistorial(); 
+        this.bindModalEvents();    
+    },
+
+    list: function() {
+        const parametros = {
+            page: paginaActual,
+            limit: 10,
+            buscar: filtrosActuales.buscar,
+            fecha_inicio: filtrosActuales.fecha_inicio,
+            fecha_fin: filtrosActuales.fecha_fin
+        }
+        service.list(parametros).then(res => {
+            if (res.success && res.data) {
+                view.renderTable(res.data.records);
+                view.renderPaginador(res.data.meta, (nroPaginaSeleccionada) => {
+                    paginaActual = nroPaginaSeleccionada; 
+                    this.list();
+                });
+            } else {
+                view.renderTable(res); 
+            }
+        }).catch(err => console.error("Hubo un problema al listar ventas", err));
+    },
+
+    bindEventsHistorial: function() {
         const tableBody = document.getElementById("sales-table-body");
         tableBody?.addEventListener("click", (e) => {
             const btnDetalle = e.target.closest(".btnVerDetalle");
-            if (btnDetalle){
+            if (btnDetalle) {
                 const idVenta = btnDetalle.getAttribute("data-id");
                 service.load(idVenta).then(venta => {
                     if (venta) view.mostrarDetalleModal(venta);
-                    else view.showMessage("No se pudo cargar el detalle de la venta", "error");
+                    else view.showMessage("No se pudo cargar el detalle", "error");
                 });
                 return;
             }
-
             const btnPdf = e.target.closest(".btnComprobantePDF");
-            if(btnPdf) {
-                this.exportToPDF(btnPdf.getAttribute("data-id"));
-                return;
-            }
-        });
-
-        document.querySelector(".btnImprimirTicketModal")?.addEventListener("click", (e) => {
-            const idVenta = e.currentTarget.getAttribute("data-id");
-            if (idVenta) this.exportToPDF(idVenta);
+            if (btnPdf) this.exportToPDF(btnPdf.getAttribute("data-id"));
         });
 
         document.querySelector(".btnExportarListado")?.addEventListener("click", () => {
             this.exportListToPDF();
         });
+
+        document.getElementById("btn-aplicar-filtros")?.addEventListener("click", () => {
+            filtrosActuales.buscar = document.getElementById("filtro-buscar").value.trim();
+            filtrosActuales.fecha_inicio = document.getElementById("filtro-fecha-inicio").value;
+            filtrosActuales.fecha_fin = document.getElementById("filtro-fecha-fin").value;
+            paginaActual = 1;
+            this.list();
+        });
+
+        document.getElementById("btn-limpiar-filtros")?.addEventListener("click", () => {
+            filtrosActuales.buscar = "";
+            filtrosActuales.fecha_inicio = "";
+            filtrosActuales.fecha_fin = "";
+            paginaActual = 1;
+
+            const inputBuscar = document.getElementById("filtro-buscar");
+            const inputInicio = document.getElementById("filtro-fecha-inicio");
+            const inputFin = document.getElementById("filtro-fecha-fin");
+
+            if (inputBuscar) inputBuscar.value = "";
+            if (inputInicio) inputInicio.value = "";
+            if (inputFin) inputFin.value = "";
+            this.list();
+        });
     },
 
-    cargarHistorial: function() {
-        service.list({ page: paginaActual, limit: 10 }).then(res => {
-                    
-                    if (res.success && res.data) {
-                        view.renderTable(res.data.records);
-                        view.renderPaginador(res.data.meta, (nroPaginaSeleccionada) => {
-                            paginaActual = nroPaginaSeleccionada; 
-                            this.cargarHistorial();
-                        });
-                    } else {
-                        view.renderTable(res); 
-                    }
-        
-                }).catch(err => {
-                    console.error("Hubo un problema al listar ventas", err);
-                });
-    },
-
-    bindEventsCreate: function(){
-        this.initSuggestiveProduct();
-        this.initSuggestiveClient();
-
-        const btnAgregar = document.getElementById("btn-agregar-carrito");
-        const carritoBody = document.getElementById("carrito-body");
-        const btnGuardar = document.getElementById("btn-guardar-venta");
-
-        const selectPago = document.getElementById("select-forma-pago");
-        const checkDescuento = document.getElementById("check-descuento");
-
-        btnAgregar?.addEventListener("click", () => {
-            const inputBusqueda = document.getElementById('input-sugestivo-producto');
-            const inputHiddenId = document.getElementById('producto-id-seleccionado');
-            const inputCant = document.getElementById("input-cantidad");
-
-            if (!inputHiddenId.value) {
-                return view.showMessage("Debe seleccionar un producto válido de las sugerencias", "error");
-            }
-
-            const idProducto = parseInt(inputHiddenId.value);
-            const nombre = inputBusqueda.value;
-            const precio = parseFloat(inputBusqueda.getAttribute("data-precio")) || 0;
-            const stock = parseInt(inputBusqueda.getAttribute("data-stock")) || 0;
-            const cantidad = parseInt(inputCant.value);
-
-            if (cantidad <= 0) return view.showMessage("La cantidad debe ser mayor a 0", "error");
-            if (cantidad > stock) return view.showMessage(`No hay stock suficiente. Máximo disponible: ${stock}`, "error");
-
-            const indexExistente = carrito.findIndex(item => item.item_id === idProducto);
-            
-            if(indexExistente !== -1){
-                if((carrito[indexExistente].cantidad + cantidad) > stock) {
-                    return view.showMessage(`No podés agregar más de ese producto. Supera el stock de ${stock}`, "error");
-                }
-                carrito[indexExistente].cantidad += cantidad;
-                carrito[indexExistente].subtotal = carrito[indexExistente].cantidad * precio;
-            } else {
-                carrito.push({ item_id: idProducto, nombre, cantidad, precio_unitario: precio, subtotal: cantidad * precio, stock: stock });
-            }
-
-            totalGeneral = view.renderCarrito(carrito);
-            actualizarTotalesEnPantalla();
-
-            inputBusqueda.value = "";
-            inputHiddenId.value = "";
-            inputCant.value = 1;
-            document.getElementById('txt-precio-unitario').textContent = "$0,00";
+    bindModalEvents: function() {
+        document.querySelector(".btnImprimirTicketModal")?.addEventListener("click", (e) => {
+            const idVenta = e.currentTarget.getAttribute("data-id");
+            if (idVenta) this.exportToPDF(idVenta);
         });
 
-        carritoBody?.addEventListener("change", (e) => {
-            if (e.target.classList.contains("cambiar-cant")) {
-                const idProducto = parseInt(e.target.getAttribute("data-id"));
-                const nuevaCantidad = parseInt(e.target.value);
-                
-                const item = carrito.find(p => p.item_id === idProducto);
-                if (!item) return;
+        document.querySelector(".btnBorrarVenta")?.addEventListener("click", () => {
+            const idVenta = document.querySelector(".btnImprimirTicketModal")?.getAttribute("data-id");
+            if (!idVenta) return view.showMessage("No se identificó la transacción", "error");
 
-                if (nuevaCantidad > item.stock) {
-                    view.showMessage(`Acción rechazada. El stock máximo disponible es ${item.stock}`, "error");
-                    view.renderCarrito(carrito); 
-                    return;
-                }
-                if (nuevaCantidad <= 0) return;
-
-                item.cantidad = nuevaCantidad;
-                item.subtotal = nuevaCantidad * item.precio_unitario;
-                totalGeneral = view.renderCarrito(carrito);
-                actualizarTotalesEnPantalla();
-            }
-        });
-
-        carritoBody?.addEventListener("click", (e) => {
-            const btnBorrar = e.target.closest(".btnBorrarItem");
-            if(btnBorrar) {
-                const idProducto = parseInt(btnBorrar.getAttribute("data-id"));
-                carrito = carrito.filter(item => item.item_id !== idProducto);
-                totalGeneral = view.renderCarrito(carrito);
-                actualizarTotalesEnPantalla();
-            }
-        });
-        
-        selectPago?.addEventListener("change", () => {
-            if (selectPago.value === "Efectivo") {
-                checkDescuento.disabled = false;
-            } else {
-                checkDescuento.checked = false;
-                checkDescuento.disabled = true;
-                montoDescuento = 0.0;
-                actualizarTotalesEnPantalla();
-            }
-        });
-        
-        checkDescuento?.addEventListener("change", () => {
-            actualizarTotalesEnPantalla();
-        });
-
-        function actualizarTotalesEnPantalla() {
-            if (checkDescuento && checkDescuento.checked) {
-                montoDescuento = totalGeneral * 0.21; 
-            } else {
-                montoDescuento = 0.0;
-            }
-
-            const totalConDescuento = totalGeneral - montoDescuento;
-
-            const txtDescuento = document.getElementById("txt-descuento");
-            if (txtDescuento) {
-                txtDescuento.textContent = montoDescuento > 0 
-                    ? `-$${montoDescuento.toLocaleString('es-AR', { minimumFractionDigits: 2 })}`
-                    : "$0,00";
-            }
-
-            document.getElementById("txt-total-general").textContent = 
-                `$${totalConDescuento.toLocaleString('es-AR', { minimumFractionDigits: 2 })}`;
-        }
-
-        btnGuardar?.addEventListener("click", () => {
-            const formaPago = document.getElementById("select-forma-pago").value;
-            const idCliente = document.getElementById("cliente-id-seleccionado")?.value || null;
-
-            if (carrito.length === 0) return view.showMessage("El detalle de la transacción está vacío", "error");
-            if (!formaPago) return view.showMessage("Debe seleccionar una forma de pago válida", "error");
-
-            const paqueteVenta = {
-                cliente_id: idCliente ? parseInt(idCliente) : null,
-                forma_pago: formaPago, 
-                descuento: montoDescuento,
-                total: totalGeneral - montoDescuento,
-                productos: carrito.map(item => ({
-                    item_id: item.item_id,
-                    nombre_item: item.nombre,
-                    cantidad: item.cantidad,
-                    precio_unitario: item.precio_unitario
-                }))
-            };
-
-            service.save(paqueteVenta).then(res => {
-                if (res.success) {
-                    Swal.fire({
-                        title: "¡Venta procesada con éxito!",
-                        text: "La transacción fue persistida en la base de datos.",
-                        icon: "success",
-                        confirmButtonText: "Aceptar",
-                        confirmButtonColor: "#28a745",
-                        allowOutsideClick: false, 
-                        allowEscapeKey: false
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            carrito = [];
-                            window.location.href = "sale/index";
+            Swal.fire({
+                title: "¿Estás seguro de eliminar esta venta?",
+                text: "Esta acción es irreversible. Se reintegrarán los productos al stock.",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Sí, eliminar",
+                confirmButtonColor: "#dc3545",
+                cancelButtonText: "Cancelar",
+                cancelButtonColor: "#636366"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    service.delete(idVenta).then(response => {
+                        if (response.success) {
+                            const modalInstancia = bootstrap.Modal.getInstance(document.getElementById('detalleVentaModal'));
+                            modalInstancia?.hide();
+                            view.showMessage(response.message, "success");
+                            this.list(); 
+                        } else {
+                            Swal.fire("Error", response.message, "error");
                         }
                     });
-                } else {
-                    view.showMessage(`Error del sistema: ${res.message}`, "error");
                 }
             });
         });
     },
+
+    bindEventsCreate: function() {
+        this.initSuggestiveProduct();
+        this.initSuggestiveClient();
+
+        const carritoBody = document.getElementById("carrito-body");
+
+        document.getElementById("btn-agregar-carrito")?.addEventListener("click", () => this.agregarAlCarrito());
+
+        carritoBody?.addEventListener("change", (e) => {
+            if (e.target.classList.contains("cambiar-cant")) this.modificarCantidadCarrito(e.target);
+        });
+
+        carritoBody?.addEventListener("click", (e) => {
+            const btnBorrar = e.target.closest(".btnBorrarItem");
+            if (btnBorrar) this.eliminarItemCarrito(parseInt(btnBorrar.getAttribute("data-id")));
+        });
+        
+        document.getElementById("select-forma-pago")?.addEventListener("change", (e) => this.manejarCambioPago(e.target));
+        document.getElementById("check-descuento")?.addEventListener("change", () => this.actualizarTotalesEnPantalla());
+
+        document.getElementById("btn-guardar-venta")?.addEventListener("click", () => this.procesarGuardadoVenta());
+    },
+
+    agregarAlCarrito: function() {
+        const inputBusqueda = document.getElementById('input-sugestivo-producto');
+        const inputHiddenId = document.getElementById('producto-id-seleccionado');
+        const inputCant = document.getElementById("input-cantidad");
+
+        if (!inputHiddenId.value) return view.showMessage("Seleccione un producto válido de las sugerencias", "error");
+
+        const idProducto = parseInt(inputHiddenId.value);
+        const precio = parseFloat(inputBusqueda.getAttribute("data-precio")) || 0;
+        const stock = parseInt(inputBusqueda.getAttribute("data-stock")) || 0;
+        const cantidad = parseInt(inputCant.value);
+
+        if (cantidad <= 0) return view.showMessage("La cantidad debe ser mayor a 0", "error");
+        if (cantidad > stock) return view.showMessage(`Stock insuficiente. Máximo: ${stock}`, "error");
+
+        const index = carrito.findIndex(item => item.item_id === idProducto);
+        if (index !== -1) {
+            if ((carrito[index].cantidad + cantidad) > stock) return view.showMessage(`Supera el stock de ${stock}`, "error");
+            carrito[index].cantidad += cantidad;
+            carrito[index].subtotal = carrito[index].cantidad * precio;
+        } else {
+            carrito.push({ item_id: idProducto, nombre: inputBusqueda.value, cantidad, precio_unitario: precio, subtotal: cantidad * precio, stock });
+        }
+
+        this.refrescarCaja();
+        inputBusqueda.value = ""; inputHiddenId.value = ""; inputCant.value = 1;
+        document.getElementById('txt-precio-unitario').textContent = "$0,00";
+    },
+
+    modificarCantidadCarrito: function(input) {
+        const idProducto = parseInt(input.getAttribute("data-id"));
+        const nuevaCantidad = parseInt(input.value);
+        const item = carrito.find(p => p.item_id === idProducto);
+        
+        if (!item) return;
+        if (nuevaCantidad > item.stock) {
+            view.showMessage(`Stock máximo disponible: ${item.stock}`, "error");
+            view.renderCarrito(carrito);
+            return;
+        }
+        if (nuevaCantidad <= 0) return;
+
+        item.cantidad = nuevaCantidad;
+        item.subtotal = nuevaCantidad * item.precio_unitario;
+        this.refrescarCaja();
+    },
+
+    eliminarItemCarrito: function(idProducto) {
+        carrito = carrito.filter(item => item.item_id !== idProducto);
+        this.refrescarCaja();
+    },
+
+    manejarCambioPago: function(select) {
+        const checkDescuento = document.getElementById("check-descuento");
+        if (select.value === "Efectivo") {
+            if (checkDescuento) checkDescuento.disabled = false;
+        } else {
+            if (checkDescuento) { checkDescuento.checked = false; checkDescuento.disabled = true; }
+            montoDescuento = 0.0;
+            this.actualizarTotalesEnPantalla();
+        }
+    },
+
+    actualizarTotalesEnPantalla: function() {
+        const checkDescuento = document.getElementById("check-descuento");
+        montoDescuento = (checkDescuento && checkDescuento.checked) ? totalGeneral * 0.21 : 0.0;
+        
+        const totalConDescuento = totalGeneral - montoDescuento;
+        const txtDescuento = document.getElementById("txt-descuento");
+        
+        if (txtDescuento) {
+            txtDescuento.textContent = montoDescuento > 0 ? `-$${montoDescuento.toLocaleString('es-AR', { minimumFractionDigits: 2 })}` : "$0,00";
+        }
+        document.getElementById("txt-total-general").textContent = `$${totalConDescuento.toLocaleString('es-AR', { minimumFractionDigits: 2 })}`;
+    },
+
+    refrescarCaja: function() {
+        totalGeneral = view.renderCarrito(carrito);
+        this.actualizarTotalesEnPantalla();
+    },
+
+    procesarGuardadoVenta: function() {
+        const formaPago = document.getElementById("select-forma-pago").value;
+        const idCliente = document.getElementById("cliente-id-seleccionado")?.value || null;
+
+        if (carrito.length === 0) return view.showMessage("El detalle de la transacción está vacío", "error");
+        if (!formaPago) return view.showMessage("Seleccione una forma de pago válida", "error");
+
+        const paqueteVenta = {
+            cliente_id: idCliente ? parseInt(idCliente) : null,
+            forma_pago: formaPago, 
+            descuento: montoDescuento,
+            total: totalGeneral - montoDescuento,
+            productos: carrito.map(item => ({
+                item_id: item.item_id,
+                nombre_item: item.nombre,
+                cantidad: item.cantidad,
+                precio_unitario: item.precio_unitario
+            }))
+        };
+
+        service.save(paqueteVenta).then(res => {
+            if (res.success) {
+                Swal.fire({
+                    title: "¡Venta procesada con éxito!",
+                    icon: "success",
+                    confirmButtonText: "Aceptar",
+                    confirmButtonColor: "#28a745",
+                    allowOutsideClick: false
+                }).then(() => { carrito = []; window.location.href = "sale/index"; });
+            } else {
+                view.showMessage(`Error: ${res.message}`, "error");
+            }
+        });
+    },
+
 
     initSuggestiveProduct: function() {
         const inputBusqueda = document.getElementById('input-sugestivo-producto');
@@ -258,12 +301,12 @@ export const controller = {
                     li.innerHTML = `
                         <div class="d-flex w-100 justify-content-between align-items-center py-1">
                             <div>
-                                <span class="text-dark fw-medium d-block mb-0" style="font-size: 0.95rem;">${item.nombre}</span>
-                                <span class="text-muted" style="font-size: 0.8rem;">
+                                <span class="text-dark fw-medium d-block mb-0 titulo-sugestivo">${item.nombre}</span>
+                                <span class="text-muted desc-sugestivo">
                                     ${item.codigo} <span class="text-neutral-300 mx-1">•</span> Stock: ${item.stock}
                                 </span>
                             </div>
-                            <span class="text-dark fw-semibold" style="font-size: 0.95rem;">
+                            <span class="text-dark fw-semibold desc-sugestivo">
                                 $${parseFloat(item.precio).toLocaleString('es-AR', { minimumFractionDigits: 2 })}
                             </span>
                         </div>
@@ -342,8 +385,8 @@ export const controller = {
                     
                     li.innerHTML = `
                         <div class="py-0">
-                            <span class="text-dark fw-medium d-block mb-0" style="font-size: 0.95rem;">${cliente.nombre}</span>
-                            <span class="text-muted" style="font-size: 0.8rem;">DNI/CUIT: ${cliente.documento || cliente.dni}</span>
+                            <span class="text-dark fw-medium d-block mb-0 titulo-sugestivo">${cliente.nombre}</span>
+                            <span class="text-muted desc-sugestivo">DNI/CUIT: ${cliente.dni || cliente.cuit_cuil}</span>
                         </div>
                     `;
 
@@ -384,11 +427,14 @@ export const controller = {
 
             doc.setFontSize(16);
             doc.text("COMPROBANTE DE VENTA", 14, 20);
+            
             doc.setFontSize(10);
-            doc.text(`Nro. Transacción: #${String(venta.id).padStart(5, '0')}`, 14, 28);
+
+            doc.text(`Nro. Transacción: #${String(venta.numero_venta).padStart(5, '0')}`, 14, 28);
             doc.text(`Fecha y Hora: ${venta.fecha}`, 14, 34);
-            doc.text(`Operador: ${venta.usuario_nombre}`, 14, 40);
-            doc.text(`Forma de Pago: ${venta.forma_pago}`, 14, 46); 
+            doc.text(`Cliente: ${venta.cliente_nombre || "Consumidor Final"}`, 14, 40); 
+            doc.text(`Forma de Pago: ${venta.forma_pago || "No especificada"}`, 14, 46); 
+            doc.text(`Operador: ${venta.usuario_nombre}`, 14, 52); 
 
             const filasTabla = venta.detalles.map(linea => [
                 linea.nombre_item,
@@ -398,7 +444,7 @@ export const controller = {
             ]);
 
             doc.autoTable({
-                startY: 52,
+                startY: 58,
                 head: [['Producto / Planta', 'Cantidad', 'Precio Unitario', 'Subtotal']],
                 body: filasTabla,
                 theme: 'striped',
@@ -409,9 +455,11 @@ export const controller = {
             doc.setFontSize(12);
             doc.text("Descuento:", 140, finalY);
             doc.text(`$${parseFloat(venta.descuento).toLocaleString('es-AR', { minimumFractionDigits: 2 })}`, 196, finalY, { align: 'right' });
-            doc.text("Monto Total:", 140, finalY+6);
-            doc.text(`$${parseFloat(venta.total).toLocaleString('es-AR', { minimumFractionDigits: 2 })}`, 196, finalY+6, { align: 'right' });
-            doc.save(`comprobante_venta_${venta.id}.pdf`);
+            
+            doc.text("Monto Total:", 140, finalY + 6);
+            doc.text(`$${parseFloat(venta.total).toLocaleString('es-AR', { minimumFractionDigits: 2 })}`, 196, finalY + 6, { align: 'right' });
+            
+            doc.save(`comprobante_venta_${venta.numero_venta}.pdf`);
         });
     },
 

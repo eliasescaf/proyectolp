@@ -16,35 +16,34 @@
       <div class="collapse mb-3" id="collapseFiltros">
         <div class="card card-body shadow-sm border-light">
           <div class="row g-3">
-            <div class="col-md-4">
-              <label class="form-label small fw-bold">Buscar</label>
+
+            <div class="col-md-5">
+              <label class="form-label small fw-bold">Buscar producto</label>
               <div class="input-group">
                 <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
-                <input type="text" class="form-control" placeholder="Nombre o código...">
+                <input type="text" id="filtro-buscar-producto" class="form-control" placeholder="Nombre o código...">
               </div>
             </div>
 
-            <div class="col-md-3">
+            <div class="col-md-4">
               <label class="form-label small fw-bold">Categoría</label>
-              <select class="form-select">
-                <option selected>Todas</option>
+              <select id="filtro-categoria-producto" class="form-select">
+                <option value="">Todas las categorías</option>
                 <option value="1">Interior</option>
                 <option value="2">Exterior</option>
-                <option value="2">Sombra</option>
+                <option value="3">Sombra</option>
               </select>
             </div>
 
-            <div class="col-md-3">
-              <label class="form-label small fw-bold">Ordenar por</label>
-              <select class="form-select">
-                <option value="nombre">Nombre (A-Z)</option>
-                <option value="cuenta">Nombre (Z-A)</option>
-              </select>
+            <div class="col-md-3 d-flex align-items-end gap-2">
+              <button type="button" id="btn-filtrar-productos" class="btn btn-primary w-50">
+                Aplicar
+              </button>
+              <button type="button" id="btn-limpiar-productos" class="btn btn-outline-secondary w-50" title="Limpiar filtros">
+                <i class="bi bi-arrow-clockwise me-1"></i>
+              </button>
             </div>
 
-            <div class="col-md-2 d-flex align-items-end">
-              <button class="btn btn-primary w-100">Aplicar</button>
-            </div>
           </div>
         </div>
       </div>
@@ -72,7 +71,6 @@
           </table>
           <div class="d-flex flex-column flex-md-row justify-content-between align-items-center p-3 border-top bg-light">
             <div id="txt-mostrando-paginas" class="small text-secondary mb-2 mb-md-0">
-              Cargando páginas...
             </div>
 
             <nav>

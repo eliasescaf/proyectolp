@@ -56,10 +56,10 @@ final class ItemService extends BaseService{
             throw new \Exception("Se requiere el filtro <strong>valueToSearch</strong> para realizar búsquedas <strong>sugestivas</strong>.");
         }
         
-        /** @var ItemDao $concreteDao */
-        $concreteDao = $this->dao;
+        /** @var ItemDao $daoConcreto */
+        $daoConcreto = $this->dao;
         
-        $records = $concreteDao->suggestive($filters);
+        $records = $daoConcreto->suggestive($filters);
         $stmt = Connection::get()->query("SELECT FOUND_ROWS()");
         $foundedRecords = (int)$stmt->fetchColumn();
         
@@ -72,6 +72,10 @@ final class ItemService extends BaseService{
     private function validate(ItemDto $dto): void{
         if (strlen(trim($dto->getNombre())) === 0) {
             throw new \Exception("El campo <strong>nombre</strong> es obligatorio.");
+        }
+
+        if (strlen(trim($dto->getDescripcion())) === 0) {
+            throw new \Exception("El campo <strong>descripcion</strong> es obligatorio.");
         }
         
         if (strlen(trim($dto->getCodigo())) === 0) {

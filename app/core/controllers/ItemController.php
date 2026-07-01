@@ -100,11 +100,13 @@ class ItemController extends BaseController{
         try {
             $filters = [
                 'page'   => $request->getParameterValue('page', 1),
-                'limit'  => $request->getParameterValue('limit', 10)
+                'limit'  => $request->getParameterValue('limit', 10),
+                'buscar' => $request->getParameterValue('buscar', ''),
+                'categoria' => $request->getParameterValue('categoria', '')
             ];
 
             $service = new ItemService();
-            $itemsDto = $service->list();
+            $itemsDto = $service->list($filters);
 
             $recordsArray = [];
             foreach($itemsDto['records'] as $dto){

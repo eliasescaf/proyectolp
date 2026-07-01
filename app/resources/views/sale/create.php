@@ -83,9 +83,10 @@
           </div>
 
           <div class="card-body p-0 flex-grow-1">
-            <div class="table-responsive">
+            
+            <div class="table-responsive" style="max-height: 280px; overflow-y: auto;">
               <table class="table table-hover align-middle mb-0">
-                <thead class="table-light text-secondary small fw-bold">
+                <thead class="table-light text-secondary small fw-bold carrito-detalle">
                   <tr>
                     <th scope="col">Producto</th>
                     <th scope="col" class="text-center" style="width: 22%;">Cant.</th>
@@ -98,6 +99,7 @@
                 </tbody>
               </table>
             </div>
+
           </div>
 
           <div class="card-footer bg-light p-3 border-top mt-auto">

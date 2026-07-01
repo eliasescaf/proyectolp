@@ -47,6 +47,7 @@ final class UserService extends BaseService{
         } else {
             $dto->setContraseña($dto->getContraseña());
         }
+        $this->validate($dto);
         $this->dao->update($dto->toArray());
     }
 
@@ -75,7 +76,12 @@ final class UserService extends BaseService{
         if($dto->getNombre() == ""){
             throw new \Exception("El campo <strong>nombre</strong> es obligatorio");
         }
-        if($dto->getPerfil() == ""){
+
+        if (!preg_match('/^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$/', $dto->getNombre())) {
+            throw new \Exception("El nombre completo solo puede contener letras y espacios.");
+        }
+
+        if($dto->getPerfil() !== 1 && $dto->getPerfil() !== 2){
             throw new \Exception("Debe especificar el <strong>perfil</strong> de la cuenta.");
         }
         if($dto->getCuenta() == ""){

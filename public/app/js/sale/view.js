@@ -21,7 +21,7 @@ export const view = {
         let htmlRows = ""; 
 
         ventas.forEach(venta => {
-            const nroFactura = `#${String(venta.id).padStart(5, '0')}`;
+            const nroFactura = `#${String(venta.numero_venta).padStart(5, '0')}`;
             const totalFormateado = parseFloat(venta.total).toLocaleString('es-AR', { minimumFractionDigits: 2 });
 
             htmlRows += `
@@ -62,12 +62,11 @@ export const view = {
                 <td class="text-center">
                     <input 
                         type="number" 
-                        class="form-control form-control-sm text-center cambiar-cant" 
+                        class="form-control form-control-sm text-center cambiar-cant carrito-render" 
                         value="${item.cantidad}" 
                         min="1" 
                         max="${item.stock}" 
-                        data-id="${item.item_id}"
-                        style="width: 70px; margin: 0 auto;">
+                        data-id="${item.item_id}">
                 </td>
                 <td class="text-end">$${item.precio_unitario.toLocaleString('es-AR', { minimumFractionDigits: 2 })}</td>
                 <td class="text-end fw-bold">$${item.subtotal.toLocaleString('es-AR', { minimumFractionDigits: 2 })}</td>
@@ -100,10 +99,12 @@ export const view = {
     
 
     mostrarDetalleModal: function(venta) {
-        document.getElementById("modal-nro-venta").textContent = `#${String(venta.id).padStart(5, '0')}`;
+        document.getElementById("modal-nro-venta").textContent = `#${String(venta.numero_venta).padStart(5, '0')}`;
         document.getElementById("modal-operador").textContent = venta.usuario_nombre;
         document.getElementById("modal-fecha").textContent = venta.fecha;
         document.getElementById("modal-total-venta").textContent = `$${parseFloat(venta.total).toLocaleString('es-AR', { minimumFractionDigits: 2 })}`;
+        document.getElementById("modal-cliente").textContent = venta.cliente_nombre || "Consumidor Final";
+        document.getElementById("modal-forma-pago").textContent = venta.forma_pago || "No especificada";
 
         const descuentoValue = parseFloat(venta.descuento) || 0;
         const contenedorDescuento = document.getElementById("modal-descuento-venta");
@@ -146,7 +147,7 @@ export const view = {
         if(contenedorText){
             contenedorText.innerHTML = meta.total_records > 0 
                 ? `Mostrando <span class="fw-bold">${desde}</span> a <span class="fw-bold">${hasta}</span> de <span class="fw-bold">${meta.total_records}</span> ventas`
-                : 'No hay ventas para mostrar';
+                : '';
         }
 
         paginadorUl.innerHTML = '';

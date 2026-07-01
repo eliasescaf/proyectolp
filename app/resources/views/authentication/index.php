@@ -26,7 +26,7 @@
                 id="usuario-data"
                 name="usuario-data"
                 class="form-control shadow-sm"
-                pattern="^[a-zA-Z0-9]+$"
+                pattern="^[a-zA-Z0-9_]+$"
                 required
                 placeholder="Ingrese su usuario..."
               />

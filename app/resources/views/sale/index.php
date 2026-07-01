@@ -6,7 +6,7 @@
       </div>
 
       <div class="d-flex justify-content-between align-items-center bg-white border rounded-3 px-3 py-2 mb-2 shadow-sm">
-        <span class="text-secondary fw-bold small"><i class="bi bi-funnel me-2"></i>Filtros de búsqueda</span>
+        <span class="text-secondary fw-bold small"><i class="bi bi-funnel me-2"></i>Filtros</span>
         <button class="btn btn-link btn-sm text-decoration-none text-muted" type="button" data-bs-toggle="collapse"
           data-bs-target="#collapseFiltros">
           <i class="bi bi-chevron-down"></i> <small>Configurar</small>
@@ -16,31 +16,37 @@
       <div class="collapse mb-3" id="collapseFiltros">
         <div class="card card-body shadow-sm border-light">
           <div class="row g-3">
+
             <div class="col-md-4">
-              <label class="form-label small fw-bold">Buscar por usuario</label>
+              <label class="form-label small fw-bold">Buscar venta</label>
               <div class="input-group">
                 <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
-                <input type="text" class="form-control" placeholder="Nombre o cuenta del usuario...">
+                <input type="text" id="filtro-buscar" class="form-control" placeholder="Vendedor...">
               </div>
             </div>
 
             <div class="col-md-3">
               <label class="form-label small fw-bold">Desde la fecha</label>
-              <input type="date" class="form-control">
+              <input type="date" id="filtro-fecha-inicio" class="form-control">
             </div>
 
             <div class="col-md-3">
               <label class="form-label small fw-bold">Hasta la fecha</label>
-              <input type="date" class="form-control">
+              <input type="date" id="filtro-fecha-fin" class="form-control">
             </div>
 
-            <div class="col-md-2 d-flex align-items-end">
-              <button class="btn btn-primary w-100">Aplicar</button>
+            <div class="col-md-2 d-flex align-items-end gap-2">
+              <button type="button" id="btn-aplicar-filtros" class="btn btn-primary w-50" title="Aplicar filtros">
+                <i class="bi bi-funnel-fill"></i>
+              </button>
+              <button type="button" id="btn-limpiar-filtros" class="btn btn-outline-secondary w-50" title="Limpiar filtros">
+                <i class="bi bi-arrow-clockwise"></i>
+              </button>
             </div>
+
           </div>
         </div>
       </div>
-
       <div class="card rounded-3 overflow-hidden shadow-sm border-light">
         <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
           <h5 class="mb-0 fw-bold">Historial de Transacciones</h5>

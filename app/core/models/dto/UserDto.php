@@ -84,6 +84,22 @@ final class UserDto {
         $this->fechaAlta = (strlen($fechaAlta) === 10) ? $fechaAlta : date("Y-m-d");
     }
 
+    public static function validarFormatoLogin(string $cuenta, string $password): void {
+        $cuentaTrimeada = trim($cuenta);
+        
+        if (empty($cuentaTrimeada) || empty($password)) {
+            throw new \Exception("Por favor, complete todos los campos obligatorios");
+        }
+
+        if (!preg_match('/^[a-zA-Z0-9_]+$/', $cuentaTrimeada)) {
+            throw new \Exception("El usuario solo puede contener letras y números, sin espacios ni caracteres especiales");
+        }
+
+        if (strlen($password) < 8) {
+            throw new \Exception("La contraseña debe tener un mínimo de 8 caracteres");
+        }
+    }
+
     public function toArray() {
         return [
             'id'         => $this->getId(),
